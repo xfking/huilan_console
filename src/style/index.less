@@ -1,0 +1,98 @@
+@import "./flex.less";
+
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #2c3e50;
+  height: 100%;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  // height: 100%;
+}
+
+a {
+  text-decoration: none;
+}
+
+//公共样式
+.w_100 {
+  width: 100%;
+}
+
+.m_r_15 {
+  margin-right: 15px;
+}
+
+.f_w{
+  font-weight: 700;
+}
+
+.main_box {
+  width: 100%;
+  height: 100%;
+  padding: 15px;
+  margin-bottom: 20px;
+  background: #ffffff;
+  border-radius: 6px;
+  box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+}
+
+.form-button {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+
+  button {
+    margin-left: 10px;
+  }
+}
+
+.el-pagination {
+  margin-top: 20px;
+  justify-content: center;
+}
+
+.el-form-item {
+  width: 100%;
+}
+
+.el-input,
+.el-textarea,
+.el-select {
+  width: 100% !important;
+  // min-width: 240px !important;
+}
+
+.avatar-uploader .el-upload {
+  border: 1px dashed #dcdfe6;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: 0.2s;
+}
+
+.avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+}
+
+.el-icon.avatar-uploader-icon {
+  font-size: 28px;
+  color: #8c939d;
+  width: 148px;
+  height: 148px;
+  text-align: center;
+}
+
+.avatar {
+  width: 148px;
+}
