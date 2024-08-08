@@ -1,48 +1,28 @@
 import { defineStore } from "pinia";
 import router from "@/router";
 import { RouteRecordRaw } from "vue-router";
+import Layout from "@/layout/index.vue";
 
 export const permissionStore = defineStore({
   id: "permission",
   state: () => ({
     routes: [
       {
-        path: "/",
-        name: "Home",
-        meta: { title: "展示中心" },
-        component: () => import("../views/Home.vue"),
-      },
-      {
-        path: "/user",
-        name: "User",
-        component: () => import("../views/User/index.vue"),
-        meta: { title: "用户管理", icon: "user" },
+        path: "/content",
+        component: Layout,
+        meta: { title: "内容管理" },
         children: [
           {
-            path: "/user/userList",
-            name: "UserList",
-            component: () => import("../views/User/userList.vue"),
-            meta: { title: "用户列表" },
-          },
-        ],
-      },
-      {
-        path: "/business",
-        name: "Business",
-        component: () => import("../views/Business/index.vue"),
-        meta: { title: "事务管理", icon: "mail" },
-        children: [
-          {
-            path: "/business/processingList",
-            name: "ProcessingList",
-            component: () => import("../views/Business/processingList.vue"),
-            meta: { title: "待办列表" },
+            path: "/pages",
+            name: "pages",
+            component: () => import("../views/pages-management/index.vue"),
+            meta: { title: "页面管理" },
           },
           {
-            path: "/business/unProcessingList",
-            name: "UnProcessingList",
-            component: () => import("../views/Business/unProcessingList.vue"),
-            meta: { title: "已办列表" },
+            path: "/pagesDetail",
+            name: "pagesDetail",
+            component: () => import("../views/pages-management/index.vue"),
+            meta: { title: "编辑", hidden: true },
           },
         ],
       },

@@ -1,17 +1,16 @@
 <template>
   <div class="menu-box">
     <div class="logo">
-      <!-- <img
+      <img
         class="login-logo"
         width="136"
         src="https://www.tencent.com/img/index/menu_logo.png"
         alt="logo"
-      /> -->
-      三和水泥管理系统
+      />
     </div>
     <el-menu
       active-text-color="#ffd04b"
-      background-color="#242424"
+      background-color="#7E3628"
       default-active="2"
       text-color="#fff"
     >
@@ -43,7 +42,7 @@ onMounted(() => {
   width: 220px;
   min-height: 100vh;
   color: #fff;
-  background-color: #242424;
+  background-color: #7e3628;
 
   .logo {
     height: 64px;

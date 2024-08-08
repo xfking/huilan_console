@@ -12,11 +12,11 @@ import { ref, watch } from "vue";
 import { ArrowRight } from "@element-plus/icons-vue";
 import { useRoute } from "vue-router";
 const route = useRoute(); // 注入router对象
-let currentRouteName: any = ref(""); // 获取当前路由对象
+let currentRouteName = ref(""); // 获取当前路由对象
 // 监听当前路由变化
 watch(
   () => route.meta.title,
-  (newVal) => {
+  (newVal: string) => {
     currentRouteName.value = newVal;
   },
   { immediate: true, deep: true }
