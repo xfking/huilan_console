@@ -25,7 +25,6 @@ const currentId: number = ref(0);
 const formData: IitemInfo = ref({
   id: "",
   title: "",
-  position: "top",
   path: "",
   desciption: "",
   buttonText: "",
@@ -85,7 +84,7 @@ const handleDelete = (index: number) => {
 
 <template>
   <div class="component_box">
-    <ContentBox title="banner信息">
+    <ContentBox title="卡片信息">
       <el-form
         :inline="true"
         v-model="formData"
@@ -94,6 +93,15 @@ const handleDelete = (index: number) => {
         label-suffix="："
       >
         <el-row :gutter="20">
+          <el-col :xs="24" :sm="24" :lg="24" :xl="24">
+            <el-form-item label="标题定位">
+              <el-radio-group v-model="data.cardType">
+                <el-radio value="normal" size="large">普通</el-radio>
+                <el-radio value="grid" size="large">宫格</el-radio>
+                <el-radio value="pin" size="large">品字</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
           <el-col :xs="24" :sm="12" :lg="12" :xl="12">
             <el-form-item label="标题">
               <el-input
@@ -110,15 +118,6 @@ const handleDelete = (index: number) => {
                 placeholder="请输入"
                 clearable
               />
-            </el-form-item>
-          </el-col>
-          <el-col :xs="24" :sm="12" :lg="12" :xl="12">
-            <el-form-item label="标题定位">
-              <el-radio-group v-model="formData.position">
-                <el-radio value="top" size="large">顶部</el-radio>
-                <el-radio value="bottom" size="large">底部</el-radio>
-                <el-radio value="center" size="large">正中</el-radio>
-              </el-radio-group>
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12" :lg="12" :xl="12">
@@ -173,7 +172,7 @@ const handleDelete = (index: number) => {
         <el-button type="primary" @click="handSubmit">保存</el-button>
       </div>
     </ContentBox>
-    <ContentBox title="banner列表">
+    <ContentBox title="数据列表">
       <el-table
         :data="data.data"
         stripe
@@ -186,9 +185,9 @@ const handleDelete = (index: number) => {
         style="width: 100%"
       >
         <el-table-column prop="title" min-width="150" label="标题" />
+        <el-table-column prop="desciption" min-width="150" label="描述" />
         <el-table-column prop="pcImg" min-width="150" label="PC素材" />
         <el-table-column prop="appImg" min-width="150" label="APP素材" />
-        <el-table-column prop="desciption" min-width="150" label="描述" />
         <el-table-column prop="path" min-width="150" label="跳转链接" />
         <el-table-column
           prop="buttonText"

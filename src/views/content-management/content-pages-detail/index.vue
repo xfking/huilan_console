@@ -1,10 +1,13 @@
 <script lang="ts" setup>
 import { ref, onMounted } from "vue";
-import { ElMessage } from "element-plus";
+import { ElMessage, ISelectProps } from "element-plus";
 import { Plus, DeleteFilled } from "@element-plus/icons-vue";
 import { useRouter } from "vue-router";
 import ContentBox from "@/components/ContentBox.vue";
 import ComponentsBanner from "@/components/ComponentsBanner.vue";
+import ComponentsSingle from "@/components/ComponentsSingleImg.vue";
+import ComponentsCard from "@/components/ComponentsCard.vue";
+import ComponentsRichText from "@/components/ComponentsRichText.vue";
 
 const router = useRouter();
 
@@ -24,23 +27,19 @@ const componentsType = ref([
     value: "banner",
   },
   {
-    text: "了解回澜",
-    value: "about",
+    text: "单图",
+    value: "single",
   },
   {
-    text: "回澜体验",
-    value: "experience",
+    text: "卡片",
+    value: "card",
   },
   {
-    text: "回澜资讯",
-    value: "information",
+    text: "富文本",
+    value: "richText",
   },
   {
-    text: "威士忌共创",
-    value: "creation",
-  },
-  {
-    text: "回澜团队",
+    text: "团队",
     value: "team",
   },
 ]);
@@ -61,6 +60,14 @@ const handDel = (index: number) => {
   dataSet.value.components.splice(index, 1);
 };
 
+/** 选择组件类型切换事件 */
+const handChange = (e: InputEvent, index: number) => {
+  dataSet.value.components[index] = {
+    type: e,
+    data: "",
+  };
+};
+
 /** 子组件更新父组件数据 */
 const handUpdataDateSet = (index: number, data: any) => {
   dataSet.value.components[index] = data;
@@ -77,6 +84,7 @@ const onBack = () => {
 </script>
 <template>
   <div class="content">
+    <!-- 基础信息 -->
     <ContentBox title="基础信息">
       <el-form
         :inline="true"
@@ -114,18 +122,20 @@ const onBack = () => {
         </el-row>
       </el-form>
     </ContentBox>
-
+    <!-- 页面配置 -->
     <ContentBox title="页面配置">
       <el-button type="primary" :icon="Plus" @click="handAdd()"
         >新增组件</el-button
       >
 
+      <!-- 页面组件 组合 -->
       <template v-if="dataSet?.components?.length">
         <div
           class="groups"
           v-for="(item, index) in dataSet.components"
           :key="index"
         >
+          <!-- 切换类型 -->
           <div class="flex flex_between groups_top">
             <div class="flex flex_align">
               <div class="groups_label">类型：</div>
@@ -133,6 +143,7 @@ const onBack = () => {
                 v-model="item.type"
                 placeholder="选择类型"
                 style="width: 240px"
+                @change="handChange($event, index)"
               >
                 <el-option
                   v-for="item in componentsType"
@@ -150,11 +161,34 @@ const onBack = () => {
               >删除组件</el-button
             >
           </div>
-          <ComponentsBanner
-            v-if="item.type"
-            @updataDateSet="handUpdataDateSet"
-            :data="item"
-          />
+
+          <template v-if="item.type">
+            <!-- 轮播图组件 -->
+            <ComponentsBanner
+              v-if="item.type === 'banner'"
+              @updataDateSet="handUpdataDateSet"
+              :data="item"
+            />
+            <!-- 单图组件 -->
+            <ComponentsSingle
+              v-if="item.type === 'single'"
+              @updataDateSet="handUpdataDateSet"
+              :data="item"
+            />
+
+            <!-- 卡片组件 -->
+            <ComponentsCard
+              v-if="item.type === 'card'"
+              @updataDateSet="handUpdataDateSet"
+              :data="item"
+            />
+
+            <ComponentsRichText
+              v-if="item.type === 'richText'"
+              @updataDateSet="handUpdataDateSet"
+              :data="item"
+            />
+          </template>
         </div>
       </template>
     </ContentBox>
@@ -173,16 +207,17 @@ const onBack = () => {
   padding: 15px;
   box-sizing: border-box;
   border-radius: 8px;
-  background: rgba(0, 0, 0, 0.1);
+  background: rgba(0, 0, 0, 0.07);
 
   .groups_top {
     width: 100%;
-    padding: 15px 0;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    // padding: 15px 0;
+    // border-bottom: 1px solid rgba(0, 0, 0, 0.05);
   }
 
   .groups_label {
     font-size: 14px;
+    font-weight: 700;
     margin-right: 10px;
   }
 }

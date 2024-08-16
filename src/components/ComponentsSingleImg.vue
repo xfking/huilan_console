@@ -1,5 +1,12 @@
 <script lang="ts" setup>
-import { defineEmits, defineProps, reactive, ref, toRefs } from "vue";
+import {
+  defineEmits,
+  defineProps,
+  onMounted,
+  reactive,
+  ref,
+  toRefs,
+} from "vue";
 import ContentBox from "@/components/ContentBox.vue";
 
 interface IitemInfo {
@@ -9,7 +16,6 @@ interface IitemInfo {
   path?: string;
   desciption?: string;
   buttonText?: string;
-  video?: string;
   pcImg?: string;
   appImg?: string;
 }
@@ -29,63 +35,26 @@ const formData: IitemInfo = ref({
   path: "",
   desciption: "",
   buttonText: "",
-  video: "",
   pcImg: "",
   appImg: "",
 });
 
-/** 重置 */
-const handReset = () => {
-  formData.value = {
-    id: "",
-    title: "",
-    position: "top",
-    path: "",
-    desciption: "",
-    buttonText: "",
-    video: "",
-    pcImg: "",
-    appImg: "",
-  };
-};
+onMounted(() => {
+  if (data.value) {
+    formData.value = { ...formData.value, ...data.value };
+  }
+});
 
 /** 提交保存方法 */
 const handSubmit = () => {
-  // 编辑
-  if (typeof formData.value.id === "number") {
-    const index: number = data.value.data.findIndex(
-      (m: IitemInfo) => m.id === formData.value.id
-    );
-    if (index >= 0) {
-      data.value.data[index] = formData.value;
-    }
-  } else {
-    // 新增
-    if (!data.value.data) {
-      data.value.data = [];
-    }
-    formData.value.id = currentId.value;
-    data.value.data.push(formData.value);
-    currentId.value++;
-  }
-  handReset();
-};
-
-/** 编辑banner */
-const handEdit = (row: IitemInfo) => {
-  formData.value = Object.assign({}, row);
-};
-
-const handleDelete = (index: number) => {
-  if (index) {
-    data.value.data.splice(index, 1);
-  }
+  const newData = Object.assign({}, formData.value);
+  data.value.data = newData;
 };
 </script>
 
 <template>
   <div class="component_box">
-    <ContentBox title="banner信息">
+    <ContentBox title="组件信息">
       <el-form
         :inline="true"
         v-model="formData"
@@ -169,43 +138,8 @@ const handleDelete = (index: number) => {
         </el-row>
       </el-form>
       <div class="">
-        <el-button @click="handReset">重置</el-button>
         <el-button type="primary" @click="handSubmit">保存</el-button>
       </div>
-    </ContentBox>
-    <ContentBox title="banner列表">
-      <el-table
-        :data="data.data"
-        stripe
-        border
-        :header-cell-style="{
-          background: '#7e3628',
-          color: '#ffffff',
-          padding: '15px 0',
-        }"
-        style="width: 100%"
-      >
-        <el-table-column prop="title" min-width="150" label="标题" />
-        <el-table-column prop="pcImg" min-width="150" label="PC素材" />
-        <el-table-column prop="appImg" min-width="150" label="APP素材" />
-        <el-table-column prop="desciption" min-width="150" label="描述" />
-        <el-table-column prop="path" min-width="150" label="跳转链接" />
-        <el-table-column
-          prop="buttonText"
-          min-width="150"
-          label="跳转按钮文案"
-        />
-        <el-table-column label="操作" width="360" fixed="right">
-          <template #default="scope">
-            <el-button type="primary" @click="handEdit(scope.row)">
-              编辑
-            </el-button>
-            <el-button type="danger" @click="handleDelete(scope.$index)">
-              删除
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
     </ContentBox>
   </div>
 </template>
