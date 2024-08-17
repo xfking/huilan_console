@@ -1,20 +1,35 @@
 <script lang="ts" setup>
 import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
 import ContentBox from "@/components/ContentBox.vue";
-import { ElMessage } from "element-plus";
+import ComponentsUploadImg from "@/components/ComponentsUploadImg.vue";
 
+const router = useRouter();
+
+/** 初始数据 */
 const dataSet = ref({
   title: "",
   path: "",
   desciption: "",
   state: 1,
+  content: "",
+  img: "",
 });
 
-onMounted(() => {});
+/** 提交 */
+const onSubmit = () => {
+  console.log("======", dataSet.value);
+};
+
+/** 返回 */
+const onBack = () => {
+  router.go(-1);
+};
 </script>
 <template>
   <div class="content">
-    <ContentBox title="查询条件">
+    <!-- 基础信息 -->
+    <ContentBox title="基础信息">
       <el-form
         :inline="true"
         :model="dataSet"
@@ -24,42 +39,62 @@ onMounted(() => {});
       >
         <el-row :gutter="20">
           <el-col :xs="24" :sm="12" :lg="12" :xl="12">
-            <el-form-item label="页面标题">
+            <el-form-item label="音乐名称">
               <el-input
-                v-model="formInline.title"
+                v-model="dataSet.title"
                 placeholder="请输入"
                 clearable
               />
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12" :lg="12" :xl="12">
-            <el-form-item label="页面链接">
+            <el-form-item label="音乐作者">
               <el-input
-                v-model="formInline.path"
+                v-model="dataSet.title"
+                placeholder="请输入"
+                clearable
+              />
+            </el-form-item>
+          </el-col>
+
+          <el-col :xs="24" :sm="12" :lg="12" :xl="12">
+            <el-form-item label="音乐简介">
+              <el-input
+                v-model="dataSet.desciption"
                 placeholder="请输入"
                 clearable
               />
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12" :lg="12" :xl="12">
-            <el-form-item label="页面描述">
-              <el-input
-                v-model="formInline.desciption"
-                :autosize="{ minRows: 2, maxRows: 4 }"
-                type="textarea"
-                placeholder="请输入"
-                clearable
+            <el-form-item label="启用">
+              <el-switch
+                v-model="dataSet.state"
+                class="ml-2"
+                style="
+                  --el-switch-on-color: #13ce66;
+                  --el-switch-off-color: #ff4949;
+                "
               />
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="音乐封面">
+              <ComponentsUploadImg :img="dataSet.img" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="音乐文件">
+              <ComponentsUploadImg :img="dataSet.img" />
             </el-form-item>
           </el-col>
         </el-row>
       </el-form>
-      <div class="form-button">
-        <el-button @click="onReset">重置</el-button>
-        <el-button type="primary" @click="onSubmit" :icon="Search"
-          >查询</el-button
-        >
-      </div>
     </ContentBox>
+
+    <div class="page_footer">
+      <el-button type="primary" size="large" @click="onSubmit">提交</el-button>
+      <el-button size="large" @click="onBack">返回</el-button>
+    </div>
   </div>
 </template>

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { defineEmits, defineProps, reactive, ref, toRefs } from "vue";
+import { reactive, ref, toRefs } from "vue";
 import ContentBox from "@/components/ContentBox.vue";
 
 interface IitemInfo {

@@ -1,12 +1,5 @@
 <script lang="ts" setup>
-import {
-  defineEmits,
-  defineProps,
-  onMounted,
-  reactive,
-  ref,
-  toRefs,
-} from "vue";
+import { onMounted, reactive, ref, toRefs } from "vue";
 import ContentBox from "@/components/ContentBox.vue";
 
 interface IitemInfo {

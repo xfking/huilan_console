@@ -1,13 +1,5 @@
 <script lang="ts" setup>
-import {
-  defineEmits,
-  defineProps,
-  onMounted,
-  ref,
-  toRefs,
-  shallowRef,
-  onBeforeUnmount,
-} from "vue";
+import { onMounted, ref, toRefs, shallowRef, onBeforeUnmount } from "vue";
 import "@wangeditor/editor/dist/css/style.css"; // 引入 css
 import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
 

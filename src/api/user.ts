@@ -16,6 +16,14 @@ const user = {
       method: "get",
     });
   },
+  // 文件上传
+  fileUpload(data: any) {
+    return request({
+      url: "/admin/file/getOssSignature",
+      method: "get",
+      params: data,
+    });
+  },
   // 获取用户列表
   getUserList(data: API.ListParams) {
     return request({

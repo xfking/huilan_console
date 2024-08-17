@@ -50,5 +50,18 @@ export const userStore = defineStore({
           });
       });
     },
+    // 文件上传
+    fileUpload(params: any) {
+      return new Promise((resolve, reject) => {
+        api.user
+          .fileUpload(params)
+          .then((res) => {
+            resolve(res);
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      });
+    },
   },
 });

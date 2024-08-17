@@ -1,13 +1,5 @@
 <script lang="ts" setup>
-import {
-  defineEmits,
-  defineProps,
-  onMounted,
-  ref,
-  toRefs,
-  shallowRef,
-  onBeforeUnmount,
-} from "vue";
+import { onMounted, ref, toRefs, shallowRef, onBeforeUnmount } from "vue";
 import ContentBox from "@/components/ContentBox.vue";
 import ComponentsRichText from "@/components/ComponentsRichText.vue";
 
