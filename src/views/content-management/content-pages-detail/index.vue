@@ -7,7 +7,7 @@ import ContentBox from "@/components/ContentBox.vue";
 import ComponentsBanner from "@/components/ComponentsBanner.vue";
 import ComponentsSingle from "@/components/ComponentsSingleImg.vue";
 import ComponentsCard from "@/components/ComponentsCard.vue";
-import ComponentsRichText from "@/components/ComponentsRichText.vue";
+import ComponentsRichText from "@/components/ComponentsRichTextBox.vue";
 
 const router = useRouter();
 
