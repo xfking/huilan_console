@@ -19,19 +19,26 @@ export const userStore = defineStore({
     login(value: API.InterData) {
       const { account, password } = value;
       return new Promise((resolve, reject) => {
-        api.user
-          .login({ account, password })
-          .then((res) => {
-            const { token } = res.data;
-            const userInfo = res.data;
+        // api.user
+        //   .login({ account, password })
+        //   .then((res) => {
+        //     const { token } = res.data;
+        //     const userInfo = res.data;
 
-            setUserInfo(userInfo);
-            setToken(token);
-            resolve(res);
-          })
-          .catch((err) => {
-            reject(err);
-          });
+        //     setUserInfo(userInfo);
+        //     setToken(token);
+        //     resolve(res);
+        //   })
+        //   .catch((err) => {
+        //     reject(err);
+        //   });
+
+        const token = "admin";
+        const userInfo = { realname: "蒋总" };
+
+        setUserInfo(userInfo);
+        setToken(token);
+        resolve(userInfo);
       });
     },
     // 登出
