@@ -1,5 +1,5 @@
 <template>
-  <!-- <div class="content-box">
+  <div class="content-box">
     <div class="home_top">
       <div class="home_left flex flex_center">
         <img
@@ -126,9 +126,6 @@
     <ContentBox title="报表统计" style="flex: 1">
       <div id="echart" style="flex: 1"></div>
     </ContentBox>
-  </div> -->
-  <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png" />
   </div>
 </template>
 
@@ -259,7 +256,7 @@ const init = () => {
 };
 
 onMounted(() => {
-  // init();
+  init();
 });
 </script>
 

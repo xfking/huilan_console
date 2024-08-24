@@ -47,7 +47,7 @@ const store = userStore();
 const router = useRouter();
 const INITIAL_DATA = {
   account: "jiangxianfeng",
-  password: "jxf123456",
+  password: "123456",
 };
 const formData = ref({ ...INITIAL_DATA });
 
@@ -70,7 +70,7 @@ const onSubmit = () => {
 #login-back {
   width: 100%;
   height: 100vh;
-  background-color: rgb(105, 158, 245);
+  background-color: #7e3628;
   box-sizing: border-box;
   position: relative;
 

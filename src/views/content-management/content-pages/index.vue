@@ -137,7 +137,7 @@ onMounted(() => {
     <template v-slot:workflow>
       <div>
         <el-button type="primary" :icon="Plus" @click="handAdd()"
-          >新增商品</el-button
+          >新增页面</el-button
         >
       </div>
     </template>
