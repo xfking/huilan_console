@@ -4,8 +4,10 @@ import { useRouter } from "vue-router";
 import ContentBox from "@/components/ContentBox.vue";
 import { Search, Plus } from "@element-plus/icons-vue";
 import { ElMessage } from "element-plus";
+import { contentStore } from "@/store/content";
 
 const router = useRouter();
+const store = contentStore();
 
 const list = ref([
   {
@@ -19,8 +21,8 @@ const pageSize = ref(10);
 const total = ref(0);
 const formInline = ref({
   title: "",
-  path: "",
-  disc: "",
+  summary: "",
+  content: "",
 });
 
 const getList = () => {
@@ -29,10 +31,10 @@ const getList = () => {
     page: currentPage.value,
     per_page: pageSize.value,
   };
-  // store.pageCement(query).then((res: any) => {
-  //   list.value = res.data.data;
-  //   total.value = res.data.total;
-  // });
+  store.pageArticle(query).then((res: any) => {
+    list.value = res.data.data;
+    total.value = res.data.total;
+  });
 };
 
 /** 提交 */
@@ -45,8 +47,8 @@ const onSubmit = () => {
 const onReset = () => {
   formInline.value = {
     title: "",
-    path: "",
-    disc: "",
+    summary: "",
+    content: "",
   };
 };
 
@@ -62,17 +64,21 @@ const handleCurrentChange = (val: number) => {
 };
 
 const handleDelete = (index: number, id: any) => {
-  // store.delSupplier({ id }).then(() => {
-  //   ElMessage.success("删除成功");
-  //   list.value.splice(index - 1, 1);
-  // });
+  store.delArticle({ id }).then(() => {
+    ElMessage.success("删除成功");
+    list.value.splice(index - 1, 1);
+  });
 };
 
 const handAdd = (id: any) => {
   router.push({ path: "informationDetail", query: { id } });
 };
 
-const handEdit = (type: boolean, id: any) => {};
+const handEdit = (type: boolean, id: any) => {
+  store.stateArticle({ id }).then(() => {
+    ElMessage.success("修改成功");
+  });
+};
 
 onMounted(() => {
   getList();
@@ -102,7 +108,7 @@ onMounted(() => {
         <el-col :xs="24" :sm="12" :lg="8" :xl="6">
           <el-form-item label="新闻简介">
             <el-input
-              v-model="formInline.path"
+              v-model="formInline.summary"
               placeholder="请输入"
               clearable
             />
@@ -111,7 +117,7 @@ onMounted(() => {
         <el-col :xs="24" :sm="12" :lg="8" :xl="6">
           <el-form-item label="新闻描述">
             <el-input
-              v-model="formInline.desc"
+              v-model="formInline.content"
               placeholder="请输入"
               clearable
             />

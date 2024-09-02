@@ -27,12 +27,12 @@ export default defineConfig(({ mode }) => {
       open: true,
       proxy: {
         "/api": {
-          target: "https://api.shsn.top",
+          target: "https://api.shsn.top", // https://api-portal.huilanwhisky.com
           secure: false,
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api/, ""),
-        }
-      }
+        },
+      },
     },
     buildModules: ["@vueuse/nuxt"],
   };

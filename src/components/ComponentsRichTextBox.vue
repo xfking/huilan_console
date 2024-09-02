@@ -1,5 +1,12 @@
 <script lang="ts" setup>
-import { onMounted, ref, toRefs, shallowRef, onBeforeUnmount } from "vue";
+import {
+  onMounted,
+  ref,
+  toRefs,
+  shallowRef,
+  onBeforeUnmount,
+  defineComponent,
+} from "vue";
 import ContentBox from "@/components/ContentBox.vue";
 import ComponentsRichText from "@/components/ComponentsRichText.vue";
 

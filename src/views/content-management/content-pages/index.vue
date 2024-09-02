@@ -4,23 +4,19 @@ import { useRouter } from "vue-router";
 import ContentBox from "@/components/ContentBox.vue";
 import { Search, Plus } from "@element-plus/icons-vue";
 import { ElMessage } from "element-plus";
+import { contentStore } from "@/store/content";
 
 const router = useRouter();
+const store = contentStore();
 
-const list = ref([
-  {
-    title: "首页",
-    path: "home",
-    disc: "测试首页",
-  },
-]);
+const list = ref([]);
 const currentPage = ref(1);
 const pageSize = ref(10);
 const total = ref(0);
 const formInline = ref({
   title: "",
   path: "",
-  disc: "",
+  desc: "",
 });
 
 const getList = () => {
@@ -29,10 +25,10 @@ const getList = () => {
     page: currentPage.value,
     per_page: pageSize.value,
   };
-  // store.pageCement(query).then((res: any) => {
-  //   list.value = res.data.data;
-  //   total.value = res.data.total;
-  // });
+  store.contentPagePages(query).then((res: any) => {
+    list.value = res.data.data;
+    total.value = res.data.total;
+  });
 };
 
 /** 提交 */
@@ -46,7 +42,7 @@ const onReset = () => {
   formInline.value = {
     title: "",
     path: "",
-    disc: "",
+    desc: "",
   };
 };
 
@@ -69,10 +65,10 @@ const handEdit = (flg: boolean, id: any) => {
 };
 
 const handleDelete = (index: number, id: any) => {
-  // store.delSupplier({ id }).then(() => {
-  //   ElMessage.success("删除成功");
-  //   list.value.splice(index - 1, 1);
-  // });
+  store.delPages({ id }).then(() => {
+    ElMessage.success("删除成功");
+    list.value.splice(index - 1, 1);
+  });
 };
 
 const handAdd = () => {

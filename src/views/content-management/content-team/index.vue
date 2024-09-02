@@ -4,23 +4,19 @@ import { useRouter } from "vue-router";
 import ContentBox from "@/components/ContentBox.vue";
 import { Search, Plus } from "@element-plus/icons-vue";
 import { ElMessage } from "element-plus";
+import { contentStore } from "@/store/content";
 
 const router = useRouter();
+const store = contentStore();
 
-const list = ref([
-  {
-    title: "首页",
-    path: "home",
-    disc: "测试首页",
-  },
-]);
+const list = ref([]);
 const currentPage = ref(1);
 const pageSize = ref(10);
 const total = ref(0);
 const formInline = ref({
-  title: "",
-  path: "",
-  disc: "",
+  name: "",
+  desc: "",
+  content: "",
 });
 
 const getList = () => {
@@ -29,10 +25,10 @@ const getList = () => {
     page: currentPage.value,
     per_page: pageSize.value,
   };
-  // store.pageCement(query).then((res: any) => {
-  //   list.value = res.data.data;
-  //   total.value = res.data.total;
-  // });
+  store.pageTeam(query).then((res: any) => {
+    list.value = res.data.data;
+    total.value = res.data.total;
+  });
 };
 
 /** 提交 */
@@ -44,9 +40,9 @@ const onSubmit = () => {
 
 const onReset = () => {
   formInline.value = {
-    title: "",
-    path: "",
-    disc: "",
+    name: "",
+    content: "",
+    desc: "",
   };
 };
 
@@ -69,10 +65,10 @@ const handEdit = (flg: boolean, id: any) => {
 };
 
 const handleDelete = (index: number, id: any) => {
-  // store.delSupplier({ id }).then(() => {
-  //   ElMessage.success("删除成功");
-  //   list.value.splice(index - 1, 1);
-  // });
+  store.delTeam({ id }).then(() => {
+    ElMessage.success("删除成功");
+    list.value.splice(index - 1, 1);
+  });
 };
 
 const handAdd = (id: any) => {
@@ -98,7 +94,7 @@ onMounted(() => {
         <el-col :xs="24" :sm="12" :lg="8" :xl="6">
           <el-form-item label="团队名称">
             <el-input
-              v-model="formInline.title"
+              v-model="formInline.name"
               placeholder="请输入"
               clearable
             />
@@ -107,7 +103,7 @@ onMounted(() => {
         <el-col :xs="24" :sm="12" :lg="8" :xl="6">
           <el-form-item label="团队简介">
             <el-input
-              v-model="formInline.path"
+              v-model="formInline.desc"
               placeholder="请输入"
               clearable
             />
@@ -116,7 +112,7 @@ onMounted(() => {
         <el-col :xs="24" :sm="12" :lg="8" :xl="6">
           <el-form-item label="团队描述">
             <el-input
-              v-model="formInline.desc"
+              v-model="formInline.content"
               placeholder="请输入"
               clearable
             />
@@ -136,7 +132,7 @@ onMounted(() => {
   <ContentBox title="查询结果">
     <template v-slot:workflow>
       <div>
-        <el-button type="primary" :icon="Plus" @click="handAdd()"
+        <el-button type="primary" :icon="Plus" @click="handAdd('')"
           >新增</el-button
         >
       </div>

@@ -1,15 +1,9 @@
 import user from "./user";
-import department from "./department";
-import client from "./client";
-import goods from "./goods";
-import order from "./order";
+import content from "./content";
 
 const api = {
   user,
-  department,
-  client,
-  goods,
-  order
+  content,
 };
 
 export default api;
