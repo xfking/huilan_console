@@ -321,5 +321,84 @@ export const contentStore = defineStore({
           });
       });
     },
+
+    // 菜单列表
+    pageMenu(params: any) {
+      return new Promise((resolve, reject) => {
+        api.content
+          .pageMenu(params)
+          .then((res) => {
+            resolve(res);
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      });
+    },
+    // 菜单详情
+    infoMenu(params: any) {
+      return new Promise((resolve, reject) => {
+        api.content
+          .infoMenu(params)
+          .then((res) => {
+            resolve(res);
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      });
+    },
+    // 新增菜单
+    createMenu(params: any) {
+      return new Promise((resolve, reject) => {
+        api.content
+          .createMenu(params)
+          .then((res) => {
+            resolve(res);
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      });
+    },
+    // 修改菜单
+    editMenu(params: any) {
+      return new Promise((resolve, reject) => {
+        api.content
+          .editMenu(params)
+          .then((res) => {
+            resolve(res);
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      });
+    },
+    // 删除菜单
+    delMenu(params: any) {
+      return new Promise((resolve, reject) => {
+        api.content
+          .delMenu(params)
+          .then((res) => {
+            resolve(res);
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      });
+    },
+    // 开启/禁用菜单
+    stateMenu(params: any) {
+      return new Promise((resolve, reject) => {
+        api.content
+          .stateMenu(params)
+          .then((res) => {
+            resolve(res);
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      });
+    },
   },
 });

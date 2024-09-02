@@ -196,6 +196,55 @@ const content = {
       data,
     });
   },
+
+  // 菜单列表
+  pageMenu(data: API.ListParams) {
+    return request({
+      url: "/admin/menu/pageMenu",
+      method: "get",
+      params: data,
+    });
+  },
+  // 菜单详情
+  infoMenu(data: API.ListParams) {
+    return request({
+      url: "/admin/menu/infoMenu",
+      method: "get",
+      params: data,
+    });
+  },
+  // 新增菜单
+  createMenu(data: API.ListParams) {
+    return request({
+      url: "/admin/menu/createMenu",
+      method: "post",
+      data,
+    });
+  },
+  // 修改菜单
+  editMenu(data: API.ListParams) {
+    return request({
+      url: "/admin/menu/editMenu",
+      method: "post",
+      data,
+    });
+  },
+  // 删除菜单
+  delMenu(data: API.ListParams) {
+    return request({
+      url: "/admin/menu/delMenu",
+      method: "post",
+      data,
+    });
+  },
+  // 开启/禁用菜单
+  stateMenu(data: API.ListParams) {
+    return request({
+      url: "/admin/menu/stateMenu",
+      method: "post",
+      data,
+    });
+  },
 };
 
 export default content;
