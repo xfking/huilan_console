@@ -17,6 +17,15 @@ const content = {
       params: data,
     });
   },
+
+  // 所有页面
+  getAllPages(data: API.ListParams) {
+    return request({
+      url: "/admin/pages/getPages",
+      method: "get",
+      params: data,
+    });
+  },
   // 开启/禁用页面
   contentStatePages(data: API.ListParams) {
     return request({

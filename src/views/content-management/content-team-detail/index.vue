@@ -4,22 +4,67 @@ import { useRouter } from "vue-router";
 import ContentBox from "@/components/contentbox.vue";
 import ComponentsRichText from "@/components/componentsrichtext.vue";
 import ComponentsUploadImg from "@/components/componentsuploadimg.vue";
+import { contentStore } from "@/store/content";
+import { ElMessage } from "element-plus";
 
 const router = useRouter();
+const { currentRoute } = useRouter();
+const route = currentRoute.value;
+const store = contentStore();
 
 /** 初始数据 */
 const dataSet = ref({
-  title: "",
+  id: "",
+  name: "",
   path: "",
-  desciption: "",
-  state: 1,
+  desc: "",
+  state: true,
   content: "",
-  img: "",
+  cover: "",
 });
 
+/** 初始方法 */
+onMounted(() => {
+  if (route.query.id) {
+    dataSet.value.id = route.query.id;
+
+    getInit();
+  }
+});
+
+const getInit = () => {
+  store.infoTeam({ id: dataSet.value.id }).then((res) => {
+    dataSet.value = {
+      ...res.data,
+      state: !!res.data.state,
+    };
+  });
+};
+
 /** 提交 */
-const onSubmit = () => {
+const onSubmit = async () => {
   console.log("======", dataSet.value);
+  const params = {
+    ...dataSet.value,
+    state: Number(dataSet.value.state),
+  };
+  let res = "";
+  if (params.id) {
+    res = await store.editTeam(params);
+  } else {
+    res = await store.createTeam(params);
+  }
+
+  if (res) {
+    ElMessage.success("提交成功");
+    const timer = setTimeout(() => {
+      router.go(-1);
+    }, 1000);
+  }
+};
+
+const update = (e) => {
+  dataSet.value.content = e;
 };
 
 /** 返回 */
@@ -41,11 +86,7 @@ const onBack = () => {
         <el-row :gutter="20">
           <el-col :xs="24" :sm="12" :lg="12" :xl="12">
             <el-form-item label="团队名称">
-              <el-input
-                v-model="dataSet.title"
-                placeholder="请输入"
-                clearable
-              />
+              <el-input v-model="dataSet.name" placeholder="请输入" clearable />
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12" :lg="12" :xl="12">
@@ -62,22 +103,18 @@ const onBack = () => {
           </el-col>
           <el-col :xs="24" :sm="12" :lg="12" :xl="12">
             <el-form-item label="团队简介">
-              <el-input
-                v-model="dataSet.desciption"
-                placeholder="请输入"
-                clearable
-              />
+              <el-input v-model="dataSet.desc" placeholder="请输入" clearable />
             </el-form-item>
           </el-col>
           <el-col :span="24">
             <el-form-item label="团队封面">
-              <ComponentsUploadImg :img="dataSet.img" />
+              <ComponentsUploadImg :img="dataSet.cover" />
             </el-form-item>
           </el-col>
         </el-row>
       </el-form>
 
-      <ComponentsRichText :data="dataSet.content" />
+      <ComponentsRichText :data="dataSet.content" @update="update" />
     </ContentBox>
 
     <div class="page_footer">

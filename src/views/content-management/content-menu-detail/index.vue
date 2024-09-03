@@ -2,22 +2,73 @@
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import ContentBox from "@/components/contentbox.vue";
+import { contentStore } from "@/store/content";
+import { ElMessage } from "element-plus";
 
 const router = useRouter();
+const { currentRoute } = useRouter();
+const route = currentRoute.value;
+const store = contentStore();
 
 /** 初始数据 */
 const dataSet = ref({
-  title: "",
-  path: "",
-  desciption: "",
-  state: 1,
-  content: "",
-  img: "",
+  id: "",
+  name: "",
+  url: "",
+  state: true,
 });
 
+const options = ref([]);
+
+/** 初始方法 */
+onMounted(() => {
+  getPages();
+  if (route.query.id) {
+    dataSet.value.id = route.query.id;
+
+    getInit();
+  }
+});
+
+const getPages = () => {
+  store.getAllPages({}).then((res) => {
+    if (res.data?.length) {
+      options.value = res.data.map((m) => {
+        return { text: m.title, value: m.url };
+      });
+    }
+  });
+};
+
+const getInit = () => {
+  store.infoMenu({ id: dataSet.value.id }).then((res) => {
+    dataSet.value = {
+      ...res.data,
+      state: !!res.data.state,
+    };
+  });
+};
+
 /** 提交 */
-const onSubmit = () => {
+const onSubmit = async () => {
   console.log("======", dataSet.value);
+  const params = {
+    ...dataSet.value,
+    state: Number(dataSet.value.state),
+  };
+  let res = "";
+  if (params.id) {
+    res = await store.editMenu(params);
+  } else {
+    res = await store.createMenu(params);
+  }
+
+  if (res) {
+    ElMessage.success("提交成功");
+    const timer = setTimeout(() => {
+      router.go(-1);
+    }, 1000);
+  }
 };
 
 /** 返回 */
@@ -39,20 +90,20 @@ const onBack = () => {
         <el-row :gutter="20">
           <el-col :xs="24" :sm="12" :lg="12" :xl="12">
             <el-form-item label="菜单名称">
-              <el-input
-                v-model="dataSet.title"
-                placeholder="请输入"
-                clearable
-              />
+              <el-input v-model="dataSet.name" placeholder="请输入" clearable />
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12" :lg="12" :xl="12">
             <el-form-item label="菜单链接">
-              <el-input
-                v-model="dataSet.title"
-                placeholder="请输入"
-                clearable
-              />
+              <el-select v-model="dataSet.url" placeholder="请选择">
+                <el-option
+                  v-for="item in options"
+                  :key="item.value"
+                  :label="item.text"
+                  :value="item.value"
+                />
+              </el-select>
+              <!-- <el-input v-model="dataSet.url" placeholder="请输入" clearable /> -->
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12" :lg="12" :xl="12">

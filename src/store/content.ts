@@ -30,6 +30,20 @@ export const contentStore = defineStore({
           });
       });
     },
+
+    // 页面详情
+    getAllPages(params: any) {
+      return new Promise((resolve, reject) => {
+        api.content
+          .getAllPages(params)
+          .then((res) => {
+            resolve(res);
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      });
+    },
     // 开启/禁用页面
     contentStatePages(params: any) {
       return new Promise((resolve, reject) => {

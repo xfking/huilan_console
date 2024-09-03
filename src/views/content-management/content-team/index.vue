@@ -75,6 +75,15 @@ const handAdd = (id: any) => {
   router.push({ path: "teamDetail", query: { id } });
 };
 
+const handState = (row) => {
+  const id = row.id;
+  const state = Number(!row.state);
+  store.stateTeam({ id, state }).then((res) => {
+    ElMessage.success("修改成功");
+    onSubmit();
+  });
+};
+
 onMounted(() => {
   getList();
 });
@@ -148,11 +157,11 @@ onMounted(() => {
       }"
       style="width: 100%"
     >
-      <el-table-column prop="title" min-width="150" label="团队名称" />
-      <el-table-column prop="path" min-width="150" label="团队简介" />
-      <el-table-column prop="disc" min-width="150" label="团队描述" />
-      <el-table-column prop="creat_time" min-width="150" label="创建时间" />
-      <el-table-column prop="date" min-width="150" label="修改时间" />
+      <el-table-column prop="name" min-width="150" label="团队名称" />
+      <el-table-column prop="desc" min-width="150" label="团队简介" />
+      <el-table-column prop="content" min-width="150" label="团队描述" />
+      <el-table-column prop="add_tm" min-width="150" label="创建时间" />
+      <el-table-column prop="edit_tm" min-width="150" label="修改时间" />
       <el-table-column label="操作" width="360" fixed="right">
         <template #default="scope">
           <el-button type="primary" @click="handAdd(scope.row.id)">
@@ -164,8 +173,11 @@ onMounted(() => {
           >
             删除
           </el-button>
-          <el-button type="success" @click="handEdit(false, scope.row.id)">
-            启用
+          <el-button
+            :type="scope.row.state ? 'danger' : 'success'"
+            @click="handState(scope.row)"
+          >
+            {{ scope.row.state ? "禁用" : "启用" }}
           </el-button>
         </template>
       </el-table-column>
@@ -174,7 +186,7 @@ onMounted(() => {
     <el-pagination
       v-model:current-page="currentPage"
       v-model:page-size="pageSize"
-      :page-sizes="[100, 200, 300, 400]"
+      :page-sizes="[10, 20, 30, 40]"
       layout="total, sizes, prev, pager, next, jumper"
       :total="total"
       @size-change="handleSizeChange"

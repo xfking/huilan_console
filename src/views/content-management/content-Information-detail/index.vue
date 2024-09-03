@@ -63,7 +63,6 @@ const getInit = () => {
 };
 
 const update = (e) => {
-  console.log("111111111", e);
   dataSet.value.content = e;
 };
 
