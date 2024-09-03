@@ -7,8 +7,8 @@ import {
   onBeforeUnmount,
   defineComponent,
 } from "vue";
-import ContentBox from "@/components/ContentBox.vue";
-import ComponentsRichText from "@/components/ComponentsRichText.vue";
+import ContentBox from "@/components/contentBox.vue";
+import ComponentsRichText from "@/components/componentsRichText.vue";
 
 interface IitemInfo {
   id?: string;
@@ -42,10 +42,15 @@ onMounted(() => {
   }
 });
 
+const update = (e) => {
+  formData.value.content = e;
+};
+
 /** 提交保存方法 */
 const handSubmit = () => {
-  const newData = Object.assign({}, formData.value);
-  data.value.data = newData;
+  // const newData = Object.assign({}, formData.value);
+  data.value.data = formData.value;
+  console.log("33333333", data.value);
 };
 </script>
 
@@ -81,7 +86,7 @@ const handSubmit = () => {
         </el-row>
       </el-form>
 
-      <ComponentsRichText :data="formData.content" />
+      <ComponentsRichText :data="formData.content" @update="update" />
 
       <div class="">
         <el-button type="primary" @click="handSubmit">保存</el-button>

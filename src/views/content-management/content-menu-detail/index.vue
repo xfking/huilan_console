@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import ContentBox from "@/components/ContentBox.vue";
+import ContentBox from "@/components/contentbox.vue";
 
 const router = useRouter();
 

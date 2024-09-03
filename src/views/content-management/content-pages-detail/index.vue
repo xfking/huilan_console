@@ -3,20 +3,25 @@ import { ref, onMounted } from "vue";
 import { ElMessage, ISelectProps } from "element-plus";
 import { Plus, DeleteFilled } from "@element-plus/icons-vue";
 import { useRouter } from "vue-router";
-import ContentBox from "@/components/ContentBox.vue";
-import ComponentsBanner from "@/components/ComponentsBanner.vue";
-import ComponentsSingle from "@/components/ComponentsSingleImg.vue";
-import ComponentsCard from "@/components/ComponentsCard.vue";
-import ComponentsRichText from "@/components/ComponentsRichTextBox.vue";
+import ContentBox from "@/components/contentBox.vue";
+import ComponentsBanner from "@/components/componentsBanner.vue";
+import ComponentsSingle from "@/components/componentsSingleImg.vue";
+import ComponentsCard from "@/components/componentsCard.vue";
+import ComponentsRichText from "@/components/componentsRichTextBox.vue";
+import { contentStore } from "@/store/content";
 
 const router = useRouter();
+const { currentRoute } = useRouter();
+const route = currentRoute.value;
+const store = contentStore();
 
 /** 初始数据 */
 const dataSet = ref({
+  id: "",
   title: "",
-  path: "",
-  desciption: "",
-  state: 1,
+  url: "",
+  desc: "",
+  state: true,
   components: [],
 });
 
@@ -45,7 +50,23 @@ const componentsType = ref([
 ]);
 
 /** 初始方法 */
-onMounted(() => {});
+onMounted(() => {
+  if (route.query.id) {
+    dataSet.value.id = route.query.id;
+
+    getInit();
+  }
+});
+
+const getInit = () => {
+  store.infoPages({ id: dataSet.value.id }).then((res) => {
+    dataSet.value = {
+      ...res.data,
+      state: !!res.data.state,
+      components: res.data.content,
+    };
+  });
+};
 
 /** 新增组件 */
 const handAdd = () => {
@@ -74,8 +95,26 @@ const handUpdataDateSet = (index: number, data: any) => {
 };
 
 /** 提交 */
-const onSubmit = () => {
+const onSubmit = async () => {
+  const params = {
+    ...dataSet.value,
+    state: Number(dataSet.value.state),
+    content: JSON.stringify(dataSet.value.components),
+  };
   console.log("==待提交数据==", dataSet.value);
+  let res = "";
+  if (params.id) {
+    res = await store.editPages(params);
+  } else {
+    res = await store.contentCreatePages(params);
+  }
+
+  if (res) {
+    ElMessage.success("提交成功");
+    const timer = setTimeout(() => {
+      router.go(-1);
+    }, 1000);
+  }
 };
 /** 返回 */
 const onBack = () => {
@@ -105,17 +144,28 @@ const onBack = () => {
           </el-col>
           <el-col :xs="24" :sm="12" :lg="12" :xl="12">
             <el-form-item label="页面链接">
-              <el-input v-model="dataSet.path" placeholder="请输入" clearable />
+              <el-input v-model="dataSet.url" placeholder="请输入" clearable />
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12" :lg="12" :xl="12">
             <el-form-item label="页面描述">
               <el-input
-                v-model="dataSet.desciption"
+                v-model="dataSet.desc"
                 :autosize="{ minRows: 3, maxRows: 5 }"
                 type="textarea"
                 placeholder="请输入"
                 clearable
+              />
+            </el-form-item>
+          </el-col>
+          <el-col :xs="24" :sm="12" :lg="12" :xl="12">
+            <el-form-item label="启用页面">
+              <el-switch
+                v-model="dataSet.state"
+                style="
+                  --el-switch-on-color: #13ce66;
+                  --el-switch-off-color: #ff4949;
+                "
               />
             </el-form-item>
           </el-col>

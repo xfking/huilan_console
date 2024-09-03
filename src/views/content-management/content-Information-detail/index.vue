@@ -1,25 +1,70 @@
 <script lang="ts" setup>
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import ContentBox from "@/components/ContentBox.vue";
-import ComponentsRichText from "@/components/ComponentsRichText.vue";
-import ComponentsUploadImg from "@/components/ComponentsUploadImg.vue";
+import ContentBox from "@/components/contentBox.vue";
+import ComponentsRichText from "@/components/componentsRichText.vue";
+import ComponentsUploadImg from "@/components/componentsUploadImg.vue";
+import { contentStore } from "@/store/content";
+import { ElMessage } from "element-plus";
 
 const router = useRouter();
+const { currentRoute } = useRouter();
+const route = currentRoute.value;
+const store = contentStore();
 
 /** 初始数据 */
 const dataSet = ref({
+  id: "",
   title: "",
-  path: "",
-  desciption: "",
-  state: 1,
+  summary: "",
   content: "",
-  img: "",
+  cover: "111",
+  state: true,
 });
 
 /** 提交 */
-const onSubmit = () => {
-  console.log("======", dataSet.value);
+const onSubmit = async () => {
+  const params = {
+    ...dataSet.value,
+    state: Number(dataSet.value.state),
+  };
+  console.log("==待提交数据==", dataSet.value);
+  let res = "";
+  if (params.id) {
+    res = await store.editArticle(params);
+  } else {
+    res = await store.createArticle(params);
+  }
+
+  if (res) {
+    ElMessage.success("提交成功");
+    const timer = setTimeout(() => {
+      router.go(-1);
+    }, 1000);
+  }
+};
+
+/** 初始方法 */
+onMounted(() => {
+  if (route.query.id) {
+    dataSet.value.id = route.query.id;
+
+    getInit();
+  }
+});
+
+const getInit = () => {
+  store.infoArticle({ id: dataSet.value.id }).then((res) => {
+    dataSet.value = {
+      ...res.data,
+      state: !!res.data.state,
+    };
+  });
+};
+
+const update = (e) => {
+  console.log("111111111", e);
+  dataSet.value.content = e;
 };
 
 /** 返回 */
@@ -52,7 +97,6 @@ const onBack = () => {
             <el-form-item label="启用">
               <el-switch
                 v-model="dataSet.state"
-                class="ml-2"
                 style="
                   --el-switch-on-color: #13ce66;
                   --el-switch-off-color: #ff4949;
@@ -63,7 +107,7 @@ const onBack = () => {
           <el-col :xs="24" :sm="12" :lg="12" :xl="12">
             <el-form-item label="新闻描述">
               <el-input
-                v-model="dataSet.desciption"
+                v-model="dataSet.summary"
                 placeholder="请输入"
                 clearable
               />
@@ -71,13 +115,13 @@ const onBack = () => {
           </el-col>
           <el-col :span="24">
             <el-form-item label="新闻封面">
-              <ComponentsUploadImg :img="dataSet.img" />
+              <ComponentsUploadImg :img="dataSet.cover" />
             </el-form-item>
           </el-col>
         </el-row>
       </el-form>
 
-      <ComponentsRichText :data="dataSet.content" />
+      <ComponentsRichText :data="dataSet.content" @update="update" />
     </ContentBox>
 
     <div class="page_footer">

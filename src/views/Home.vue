@@ -131,7 +131,7 @@
 
 <script lang="ts" setup>
 import { ref, onMounted } from "vue";
-import ContentBox from "@/components/ContentBox.vue";
+import ContentBox from "@/components/contentbox.vue";
 import * as echarts from "echarts";
 import {
   TrendCharts,

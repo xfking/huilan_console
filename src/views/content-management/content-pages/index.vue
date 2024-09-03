@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import ContentBox from "@/components/ContentBox.vue";
+import ContentBox from "@/components/contentBox.vue";
 import { Search, Plus } from "@element-plus/icons-vue";
 import { ElMessage } from "element-plus";
 import { contentStore } from "@/store/content";
@@ -73,6 +73,15 @@ const handleDelete = (index: number, id: any) => {
 
 const handAdd = () => {
   router.push({ path: "pagesDetail" });
+};
+
+const handState = (row) => {
+  const id = row.id;
+  const state = Number(!row.state);
+  store.contentStatePages({ id, state }).then((res) => {
+    ElMessage.success("修改成功");
+    onSubmit();
+  });
 };
 
 onMounted(() => {
@@ -149,21 +158,26 @@ onMounted(() => {
       style="width: 100%"
     >
       <el-table-column prop="title" min-width="150" label="标题" />
-      <el-table-column prop="path" min-width="150" label="网址" />
-      <el-table-column prop="disc" min-width="150" label="页面描述" />
-      <el-table-column prop="creat_time" min-width="150" label="创建时间" />
-      <el-table-column prop="date" min-width="150" label="修改时间" />
+      <el-table-column prop="url" min-width="150" label="网址" />
+      <el-table-column prop="desc" min-width="150" label="页面描述" />
+      <el-table-column prop="add_tm" min-width="150" label="创建时间" />
+      <el-table-column prop="edit_tm" min-width="150" label="修改时间" />
       <el-table-column label="操作" width="360" fixed="right">
         <template #default="scope">
           <el-button type="primary" @click="handEdit(true, scope.row.id)">
             编辑
           </el-button>
-          <el-button @click="handEdit(false, scope.row.id)"> 查看 </el-button>
           <el-button
             type="danger"
             @click="handleDelete(scope.$index, scope.row.id)"
           >
             删除
+          </el-button>
+          <el-button
+            :type="scope.row.state ? 'danger' : 'success'"
+            @click="handState(scope.row)"
+          >
+            {{ scope.row.state ? "禁用" : "启用" }}
           </el-button>
         </template>
       </el-table-column>

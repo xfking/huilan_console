@@ -4,6 +4,7 @@ import router from "./router";
 import { createPinia } from "pinia";
 import ElementUI from "element-plus";
 import zhCn from "element-plus/es/locale/lang/zh-cn";
+import '@wangeditor/editor/dist/css/style.css'
 import "./style/index.less";
 // import "./permission";
 import { sublogin } from "./permission"

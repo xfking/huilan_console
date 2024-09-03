@@ -1,8 +1,8 @@
 <script lang="ts" setup>
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
-import ContentBox from "@/components/ContentBox.vue";
-import ComponentsUploadImg from "@/components/ComponentsUploadImg.vue";
+import ContentBox from "@/components/contentbox.vue";
+import ComponentsUploadImg from "@/components/componentsuploadimg.vue";
 
 const router = useRouter();
 

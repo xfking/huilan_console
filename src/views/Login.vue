@@ -46,7 +46,7 @@ import { ElMessage } from "element-plus";
 const store = userStore();
 const router = useRouter();
 const INITIAL_DATA = {
-  account: "jiangxianfeng",
+  account: "jxf",
   password: "123456",
 };
 const formData = ref({ ...INITIAL_DATA });

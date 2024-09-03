@@ -1,15 +1,16 @@
 <script lang="ts" setup>
 import { onMounted, ref, toRefs, shallowRef, onBeforeUnmount } from "vue";
-import "@wangeditor/editor/dist/css/style.css"; // 引入 css
+// import "@wangeditor/editor/dist/css/style.css"; // 引入 css
 import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
 
-const emit = defineEmits(["updataDateSet"]);
+const emit = defineEmits(["update:data"]);
 const props = defineProps({
   data: {
     default: "",
   },
 });
 const { data } = toRefs(props);
+const content = ref("");
 
 // 编辑器实例，必须用 shallowRef
 const editorRef = shallowRef();
@@ -29,6 +30,10 @@ onBeforeUnmount(() => {
 const handleCreated = (editor: any) => {
   editorRef.value = editor; // 记录 editor 实例，重要！
 };
+
+const handleChanged = (editor) => {
+  emit("update", editor.getHtml());
+};
 </script>
 
 <template>
@@ -36,15 +41,16 @@ const handleCreated = (editor: any) => {
     <Toolbar
       style="border-bottom: 1px solid #ccc"
       :editor="editorRef"
+      mode="default"
       :defaultConfig="toolbarConfig"
-      :mode="mode"
     />
     <Editor
       style="height: 500px; overflow-y: hidden"
       v-model="data"
+      mode="default"
       :defaultConfig="editorConfig"
-      :mode="mode"
       @onCreated="handleCreated"
+      @onChange="handleChanged"
     />
   </div>
 </template>

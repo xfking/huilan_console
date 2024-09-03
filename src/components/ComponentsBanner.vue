@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { reactive, ref, toRefs } from "vue";
-import ContentBox from "@/components/ContentBox.vue";
+import ContentBox from "@/components/contentBox.vue";
 
 interface IitemInfo {
   id?: string;
