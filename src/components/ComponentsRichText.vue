@@ -32,6 +32,7 @@ const handleCreated = (editor: any) => {
 };
 
 const handleChanged = (editor) => {
+  console.log(333333333, editor.getHtml());
   emit("update", editor.getHtml());
 };
 </script>

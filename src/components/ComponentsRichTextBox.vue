@@ -38,19 +38,21 @@ const formData: IitemInfo = ref({
 
 onMounted(() => {
   if (data.value) {
-    formData.value = { ...formData.value, ...data.value };
+    formData.value = { ...formData.value, ...data.value.data };
+    console.log("----------", formData.value);
   }
 });
 
 const update = (e) => {
-  formData.value.content = e;
+  // formData.value.content = e;
+  console.log("2222222222", e);
 };
 
 /** 提交保存方法 */
 const handSubmit = () => {
-  // const newData = Object.assign({}, formData.value);
-  data.value.data = formData.value;
-  console.log("33333333", data.value);
+  const newData = Object.assign({}, formData.value);
+  data.value.data = newData;
+  console.log("33333333", newData, data.value);
 };
 </script>
 
@@ -85,7 +87,7 @@ const handSubmit = () => {
           </el-col>
         </el-row>
       </el-form>
-
+      {{ formData.content }}
       <ComponentsRichText :data="formData.content" @update="update" />
 
       <div class="">

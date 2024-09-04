@@ -18,7 +18,7 @@ const dataSet = ref({
   title: "",
   summary: "",
   content: "",
-  cover: "111",
+  cover: "",
   state: true,
 });
 

@@ -59,6 +59,11 @@ const handleAvatarSuccess: UploadProps["onSuccess"] = (
   uploadFile
 ) => {
   img.value = objDate.value.host + "/" + objDate.value.key;
+  console.log(
+    "========",
+    img.value,
+    objDate.value.host + "/" + objDate.value.key
+  );
 };
 </script>
 

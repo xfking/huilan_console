@@ -34,7 +34,7 @@ const formData: IitemInfo = ref({
 
 onMounted(() => {
   if (data.value) {
-    formData.value = { ...formData.value, ...data.value };
+    formData.value = { ...formData.value, ...data.value.data };
   }
 });
 
@@ -42,6 +42,7 @@ onMounted(() => {
 const handSubmit = () => {
   const newData = Object.assign({}, formData.value);
   data.value.data = newData;
+  console.log(22222222222, data.value);
 };
 </script>
 
