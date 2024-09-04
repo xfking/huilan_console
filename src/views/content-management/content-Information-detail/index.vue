@@ -62,7 +62,7 @@ const getInit = () => {
   });
 };
 
-const update = (e) => {
+const update = (e: any) => {
   dataSet.value.content = e;
 };
 
@@ -114,7 +114,10 @@ const onBack = () => {
           </el-col>
           <el-col :span="24">
             <el-form-item label="新闻封面">
-              <ComponentsUploadImg :img="dataSet.cover" />
+              <ComponentsUploadImg
+                :img="dataSet.cover"
+                @updata:img="dataSet.cover = $event"
+              />
             </el-form-item>
           </el-col>
         </el-row>

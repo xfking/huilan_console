@@ -5,6 +5,8 @@ import * as path from "path";
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
+    loadEnv(mode, process.cwd());
+
   return {
     plugins: [
       vue(),
@@ -24,7 +26,6 @@ export default defineConfig(({ mode }) => {
     server: {
       host: "0.0.0.0",
       open: true,
-      hmr: true,
       proxy: {
         "/api": {
           // target: "https://api.shsn.top", 

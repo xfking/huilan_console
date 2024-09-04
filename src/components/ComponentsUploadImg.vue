@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { userStore } from "@/store/user";
 import { UploadProps } from "element-plus";
-import { onMounted, reactive, ref, toRefs } from "vue";
+import { onMounted, reactive, ref, toRefs, watch } from "vue";
 import { Plus } from "@element-plus/icons-vue";
 
-const emit = defineEmits(["updataDateSet"]);
+const emit = defineEmits(["updata:img"]);
 const props = defineProps({
   img: {
     default: "",
@@ -13,7 +13,9 @@ const props = defineProps({
     default: false,
   },
 });
+
 const { img } = toRefs(props);
+const image = ref(img.value);
 
 const store = userStore();
 
@@ -58,12 +60,8 @@ const handleAvatarSuccess: UploadProps["onSuccess"] = (
   response,
   uploadFile
 ) => {
-  img.value = objDate.value.host + "/" + objDate.value.key;
-  console.log(
-    "========",
-    img.value,
-    objDate.value.host + "/" + objDate.value.key
-  );
+  image.value = objDate.value.host + "/" + objDate.value.key;
+  emit("updata:img", image.value);
 };
 </script>
 

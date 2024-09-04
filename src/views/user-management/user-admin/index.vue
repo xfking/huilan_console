@@ -4,23 +4,20 @@ import { useRouter } from "vue-router";
 import ContentBox from "@/components/contentbox.vue";
 import { Search, Plus } from "@element-plus/icons-vue";
 import { ElMessage } from "element-plus";
+import { memberStore } from "@/store/member";
 
 const router = useRouter();
+const store = memberStore();
 
-const list = ref([
-  {
-    title: "首页",
-    path: "home",
-    disc: "测试首页",
-  },
-]);
+const list = ref([]);
 const currentPage = ref(1);
 const pageSize = ref(10);
 const total = ref(0);
 const formInline = ref({
-  title: "",
-  path: "",
-  disc: "",
+  id: "",
+  realname: "",
+  account: "",
+  email: "",
 });
 
 const getList = () => {
@@ -29,10 +26,10 @@ const getList = () => {
     page: currentPage.value,
     per_page: pageSize.value,
   };
-  // store.pageCement(query).then((res: any) => {
-  //   list.value = res.data.data;
-  //   total.value = res.data.total;
-  // });
+  store.pageStaff(query).then((res: any) => {
+    list.value = res.data.data;
+    total.value = res.data.total;
+  });
 };
 
 /** 提交 */
@@ -44,9 +41,10 @@ const onSubmit = () => {
 
 const onReset = () => {
   formInline.value = {
-    title: "",
-    path: "",
-    disc: "",
+    id: "",
+    realname: "",
+    account: "",
+    email: "",
   };
 };
 
@@ -61,22 +59,24 @@ const handleCurrentChange = (val: number) => {
   getList();
 };
 
-const handEdit = (flg: boolean, id: any) => {
-  router.push({
-    path: "pagesDetail",
-    query: { isEdit: flg ? "Y" : "N", id },
+const handleDelete = (index: number, id: any) => {
+  store.delStaff({ id }).then(() => {
+    ElMessage.success("删除成功");
+    list.value.splice(index - 1, 1);
   });
 };
 
-const handleDelete = (index: number, id: any) => {
-  // store.delSupplier({ id }).then(() => {
-  //   ElMessage.success("删除成功");
-  //   list.value.splice(index - 1, 1);
-  // });
+const handAdd = (id: any) => {
+  router.push({ path: "adminDetail", query: { id } });
 };
 
-const handAdd = () => {
-  router.push({ path: "pagesDetail" });
+const handState = (row: any) => {
+  const id = row.id;
+  const state = Number(!row.state);
+  store.stateStaff({ id, state }).then((res) => {
+    ElMessage.success("修改成功");
+    onSubmit();
+  });
 };
 
 onMounted(() => {
@@ -96,27 +96,32 @@ onMounted(() => {
     >
       <el-row :gutter="20">
         <el-col :xs="24" :sm="12" :lg="8" :xl="6">
-          <el-form-item label="标题">
+          <el-form-item label="用户名称">
             <el-input
-              v-model="formInline.title"
+              v-model="formInline.realname"
               placeholder="请输入"
               clearable
             />
           </el-form-item>
         </el-col>
         <el-col :xs="24" :sm="12" :lg="8" :xl="6">
-          <el-form-item label="网址">
+          <el-form-item label="用户编号">
+            <el-input v-model="formInline.id" placeholder="请输入" clearable />
+          </el-form-item>
+        </el-col>
+        <el-col :xs="24" :sm="12" :lg="8" :xl="6">
+          <el-form-item label="用户账号">
             <el-input
-              v-model="formInline.path"
+              v-model="formInline.account"
               placeholder="请输入"
               clearable
             />
           </el-form-item>
         </el-col>
         <el-col :xs="24" :sm="12" :lg="8" :xl="6">
-          <el-form-item label="页面描述">
+          <el-form-item label="邮箱">
             <el-input
-              v-model="formInline.desc"
+              v-model="formInline.email"
               placeholder="请输入"
               clearable
             />
@@ -137,7 +142,7 @@ onMounted(() => {
     <template v-slot:workflow>
       <div>
         <el-button type="primary" :icon="Plus" @click="handAdd()"
-          >新增商品</el-button
+          >新增</el-button
         >
       </div>
     </template>
@@ -152,22 +157,29 @@ onMounted(() => {
       }"
       style="width: 100%"
     >
-      <el-table-column prop="title" min-width="150" label="标题" />
-      <el-table-column prop="path" min-width="150" label="网址" />
-      <el-table-column prop="disc" min-width="150" label="页面描述" />
-      <el-table-column prop="creat_time" min-width="150" label="创建时间" />
-      <el-table-column prop="date" min-width="150" label="修改时间" />
+      <el-table-column prop="id" min-width="150" label="用户ID" />
+      <el-table-column prop="realname" min-width="150" label="用户名称" />
+      <el-table-column prop="account" min-width="150" label="用户账号" />
+      <el-table-column prop="email" min-width="150" label="邮箱" />
+      <el-table-column prop="role" min-width="150" label="角色" />
+      <el-table-column prop="add_tm" min-width="150" label="创建时间" />
+      <el-table-column prop="last_tm" min-width="150" label="更新时间" />
       <el-table-column label="操作" width="360" fixed="right">
         <template #default="scope">
-          <el-button type="primary" @click="handEdit(true, scope.row.id)">
+          <el-button type="primary" @click="handAdd(scope.row.id)">
             编辑
           </el-button>
-          <el-button @click="handEdit(false, scope.row.id)"> 查看 </el-button>
           <el-button
             type="danger"
             @click="handleDelete(scope.$index, scope.row.id)"
           >
             删除
+          </el-button>
+          <el-button
+            :type="scope.row.state ? 'danger' : 'success'"
+            @click="handState(scope.row)"
+          >
+            {{ scope.row.state ? "禁用" : "启用" }}
           </el-button>
         </template>
       </el-table-column>

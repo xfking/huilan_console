@@ -4,23 +4,20 @@ import { useRouter } from "vue-router";
 import ContentBox from "@/components/contentbox.vue";
 import { Search, Plus } from "@element-plus/icons-vue";
 import { ElMessage } from "element-plus";
+import { barrelStore } from "@/store/barrel";
 
 const router = useRouter();
+const store = barrelStore();
 
-const list = ref([
-  {
-    title: "首页",
-    path: "home",
-    disc: "测试首页",
-  },
-]);
+const list = ref([]);
 const currentPage = ref(1);
 const pageSize = ref(10);
 const total = ref(0);
 const formInline = ref({
-  title: "",
-  path: "",
-  disc: "",
+  name: "",
+  tags: "",
+  material: "",
+  flavour: "",
 });
 
 const getList = () => {
@@ -29,10 +26,10 @@ const getList = () => {
     page: currentPage.value,
     per_page: pageSize.value,
   };
-  // store.pageCement(query).then((res: any) => {
-  //   list.value = res.data.data;
-  //   total.value = res.data.total;
-  // });
+  store.pageBarrel(query).then((res: any) => {
+    list.value = res.data.data;
+    total.value = res.data.total;
+  });
 };
 
 /** 提交 */
@@ -44,9 +41,10 @@ const onSubmit = () => {
 
 const onReset = () => {
   formInline.value = {
-    title: "",
-    path: "",
-    disc: "",
+    name: "",
+    tags: "",
+    material: "",
+    flavour: "",
   };
 };
 
@@ -61,22 +59,24 @@ const handleCurrentChange = (val: number) => {
   getList();
 };
 
-const handEdit = (flg: boolean, id: any) => {
-  router.push({
-    path: "pagesDetail",
-    query: { isEdit: flg ? "Y" : "N", id },
-  });
-};
-
 const handleDelete = (index: number, id: any) => {
-  // store.delSupplier({ id }).then(() => {
-  //   ElMessage.success("删除成功");
-  //   list.value.splice(index - 1, 1);
-  // });
+  store.delBarrel({ id }).then(() => {
+    ElMessage.success("删除成功");
+    list.value.splice(index - 1, 1);
+  });
 };
 
 const handAdd = (id: any) => {
   router.push({ path: "barrelDetail", query: { id } });
+};
+
+const handState = (row: any) => {
+  const id = row.id;
+  const state = Number(!row.state);
+  store.stateBarrel({ id, state }).then((res) => {
+    ElMessage.success("修改成功");
+    onSubmit();
+  });
 };
 
 onMounted(() => {
@@ -98,16 +98,7 @@ onMounted(() => {
         <el-col :xs="24" :sm="12" :lg="8" :xl="6">
           <el-form-item label="单桶名称">
             <el-input
-              v-model="formInline.title"
-              placeholder="请输入"
-              clearable
-            />
-          </el-form-item>
-        </el-col>
-        <el-col :xs="24" :sm="12" :lg="8" :xl="6">
-          <el-form-item label="单桶编号">
-            <el-input
-              v-model="formInline.path"
+              v-model="formInline.name"
               placeholder="请输入"
               clearable
             />
@@ -116,7 +107,7 @@ onMounted(() => {
         <el-col :xs="24" :sm="12" :lg="8" :xl="6">
           <el-form-item label="风味">
             <el-input
-              v-model="formInline.desc"
+              v-model="formInline.flavour"
               placeholder="请输入"
               clearable
             />
@@ -125,7 +116,16 @@ onMounted(() => {
         <el-col :xs="24" :sm="12" :lg="8" :xl="6">
           <el-form-item label="原料">
             <el-input
-              v-model="formInline.desc"
+              v-model="formInline.material"
+              placeholder="请输入"
+              clearable
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :xs="24" :sm="12" :lg="8" :xl="6">
+          <el-form-item label="单桶标签">
+            <el-input
+              v-model="formInline.tags"
               placeholder="请输入"
               clearable
             />
@@ -161,14 +161,14 @@ onMounted(() => {
       }"
       style="width: 100%"
     >
-      <el-table-column prop="title" min-width="150" label="单桶编号" />
-      <el-table-column prop="path" min-width="150" label="单桶名称" />
-      <el-table-column prop="disc" min-width="150" label="风味" />
-      <el-table-column prop="disc" min-width="150" label="净含量" />
-      <el-table-column prop="disc" min-width="150" label="原料" />
-      <el-table-column prop="disc" min-width="150" label="单桶标签" />
-      <el-table-column prop="creat_time" min-width="150" label="创建时间" />
-      <el-table-column prop="date" min-width="150" label="修改时间" />
+      <el-table-column prop="id" min-width="150" label="单桶编号" />
+      <el-table-column prop="name" min-width="150" label="单桶名称" />
+      <el-table-column prop="flavour" min-width="150" label="风味" />
+      <el-table-column prop="net_content" min-width="150" label="净含量" />
+      <el-table-column prop="material" min-width="150" label="原料" />
+      <el-table-column prop="tags" min-width="150" label="单桶标签" />
+      <el-table-column prop="add_tm" min-width="150" label="创建时间" />
+      <el-table-column prop="edit_tm" min-width="150" label="修改时间" />
       <el-table-column label="操作" width="360" fixed="right">
         <template #default="scope">
           <el-button type="primary" @click="handAdd(scope.row.id)">
@@ -180,7 +180,12 @@ onMounted(() => {
           >
             删除
           </el-button>
-          <el-button @click="handEdit(false, scope.row.id)"> 查看 </el-button>
+          <el-button
+            :type="scope.row.state ? 'danger' : 'success'"
+            @click="handState(scope.row)"
+          >
+            {{ scope.row.state ? "禁用" : "启用" }}
+          </el-button>
         </template>
       </el-table-column>
     </el-table>

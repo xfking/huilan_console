@@ -74,7 +74,7 @@ const handEdit = (type: boolean, id: any) => {
   });
 };
 
-const handState = (row) => {
+const handState = (row: any) => {
   const id = row.id;
   const state = Number(!row.state);
   store.stateArticle({ id, state }).then((res) => {

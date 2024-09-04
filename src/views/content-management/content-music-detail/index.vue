@@ -18,26 +18,27 @@ const dataSet = ref({
   author: "",
   desc: "",
   state: true,
-  url: "https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif?imageView2/1/w/80/h/80",
-  cover:
-    "https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif?imageView2/1/w/80/h/80",
+  url: "",
+  cover: "",
 });
 
 /** 初始方法 */
 onMounted(() => {
   if (route.query.id) {
-    dataSet.value.id = route.query.id;
+    dataSet.value.id = route.query.id || "";
 
     getInit();
   }
 });
 
 const getInit = () => {
-  store.infoMusic({ id: dataSet.value.id }).then((res) => {
+  store.infoMusic({ id: dataSet.value.id }).then((res: any) => {
     dataSet.value = {
       ...res.data,
       state: !!res.data.state,
     };
+
+    console.log("1111111111", dataSet.value);
   });
 };
 
@@ -48,7 +49,7 @@ const onSubmit = async () => {
     ...dataSet.value,
     state: Number(dataSet.value.state),
   };
-  let res = "";
+  let res: any = "";
   if (params.id) {
     res = await store.editMusic(params);
   } else {
@@ -114,7 +115,10 @@ const onBack = () => {
           </el-col>
           <el-col :span="24">
             <el-form-item label="音乐封面">
-              <ComponentsUploadImg :img="dataSet.cover" />
+              <ComponentsUploadImg
+                :img="dataSet.cover"
+                @updata:img="dataSet.cover = $event"
+              />
             </el-form-item>
           </el-col>
           <el-col :span="24">

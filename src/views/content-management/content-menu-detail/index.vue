@@ -56,7 +56,7 @@ const onSubmit = async () => {
     ...dataSet.value,
     state: Number(dataSet.value.state),
   };
-  let res = "";
+  let res:any = "";
   if (params.id) {
     res = await store.editMenu(params);
   } else {

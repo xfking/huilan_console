@@ -108,7 +108,10 @@ const onBack = () => {
           </el-col>
           <el-col :span="24">
             <el-form-item label="团队封面">
-              <ComponentsUploadImg :img="dataSet.cover" />
+              <ComponentsUploadImg
+                :img="dataSet.cover"
+                @updata:img="dataSet.cover = $event"
+              />
             </el-form-item>
           </el-col>
         </el-row>

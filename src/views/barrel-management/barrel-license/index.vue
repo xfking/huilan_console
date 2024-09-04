@@ -4,23 +4,20 @@ import { useRouter } from "vue-router";
 import ContentBox from "@/components/contentbox.vue";
 import { Search, Plus } from "@element-plus/icons-vue";
 import { ElMessage } from "element-plus";
+import { barrelStore } from "@/store/barrel";
 
 const router = useRouter();
+const store = barrelStore();
 
-const list = ref([
-  {
-    title: "首页",
-    path: "home",
-    disc: "测试首页",
-  },
-]);
+const list = ref([]);
 const currentPage = ref(1);
 const pageSize = ref(10);
 const total = ref(0);
 const formInline = ref({
-  title: "",
-  path: "",
-  disc: "",
+  barrel_id: "",
+  m_id: "",
+  start_tm: "",
+  end_tm: "",
 });
 
 const getList = () => {
@@ -29,10 +26,10 @@ const getList = () => {
     page: currentPage.value,
     per_page: pageSize.value,
   };
-  // store.pageCement(query).then((res: any) => {
-  //   list.value = res.data.data;
-  //   total.value = res.data.total;
-  // });
+  store.pageCard(query).then((res: any) => {
+    list.value = res.data.data;
+    total.value = res.data.total;
+  });
 };
 
 /** 提交 */
@@ -44,9 +41,10 @@ const onSubmit = () => {
 
 const onReset = () => {
   formInline.value = {
-    title: "",
-    path: "",
-    disc: "",
+    barrel_id: "",
+    m_id: "",
+    start_tm: "",
+    end_tm: "",
   };
 };
 
@@ -61,22 +59,24 @@ const handleCurrentChange = (val: number) => {
   getList();
 };
 
-const handEdit = (flg: boolean, id: any) => {
-  router.push({
-    path: "pagesDetail",
-    query: { isEdit: flg ? "Y" : "N", id },
-  });
-};
-
 const handleDelete = (index: number, id: any) => {
-  // store.delSupplier({ id }).then(() => {
-  //   ElMessage.success("删除成功");
-  //   list.value.splice(index - 1, 1);
-  // });
+  store.delCard({ id }).then(() => {
+    ElMessage.success("删除成功");
+    list.value.splice(index - 1, 1);
+  });
 };
 
 const handAdd = (id: any) => {
   router.push({ path: "barrelLicenseDetail", query: { id } });
+};
+
+const handState = (row: any) => {
+  const id = row.id;
+  const state = Number(!row.state);
+  store.stateCard({ id, state }).then((res) => {
+    ElMessage.success("修改成功");
+    onSubmit();
+  });
 };
 
 onMounted(() => {
@@ -96,18 +96,9 @@ onMounted(() => {
     >
       <el-row :gutter="20">
         <el-col :xs="24" :sm="12" :lg="8" :xl="6">
-          <el-form-item label="单桶名称">
-            <el-input
-              v-model="formInline.title"
-              placeholder="请输入"
-              clearable
-            />
-          </el-form-item>
-        </el-col>
-        <el-col :xs="24" :sm="12" :lg="8" :xl="6">
           <el-form-item label="单桶编号">
             <el-input
-              v-model="formInline.path"
+              v-model="formInline.barrel_id"
               placeholder="请输入"
               clearable
             />
@@ -116,8 +107,30 @@ onMounted(() => {
         <el-col :xs="24" :sm="12" :lg="8" :xl="6">
           <el-form-item label="用户名称">
             <el-input
-              v-model="formInline.desc"
+              v-model="formInline.m_id"
               placeholder="请输入"
+              clearable
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :xs="24" :sm="12" :lg="8" :xl="6">
+          <el-form-item label="开始时间">
+            <el-date-picker
+              v-model="formInline.start_tm"
+              type="datetime"
+              value-format="x"
+              placeholder="请选择时间"
+              clearable
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :xs="24" :sm="12" :lg="8" :xl="6">
+          <el-form-item label="结束时间">
+            <el-date-picker
+              v-model="formInline.end_tm"
+              type="datetime"
+              value-format="x"
+              placeholder="请选择时间"
               clearable
             />
           </el-form-item>
@@ -152,14 +165,14 @@ onMounted(() => {
       }"
       style="width: 100%"
     >
-      <el-table-column prop="title" min-width="150" label="单桶编号" />
-      <el-table-column prop="path" min-width="150" label="单桶名称" />
-      <el-table-column prop="disc" min-width="150" label="风味" />
-      <el-table-column prop="title" min-width="150" label="净含量" />
-      <el-table-column prop="path" min-width="150" label="用户编号" />
-      <el-table-column prop="disc" min-width="150" label="用户名称" />
-      <el-table-column prop="creat_time" min-width="150" label="绑定时间" />
-      <el-table-column prop="date" min-width="150" label="更新时间" />
+      <el-table-column prop="bucket_no" min-width="150" label="单桶编号" />
+      <el-table-column prop="barrel_name" min-width="150" label="单桶名称" />
+      <el-table-column prop="barrel_flavour" min-width="150" label="风味" />
+      <el-table-column prop="barrel_net" min-width="150" label="净含量" />
+      <el-table-column prop="member_no" min-width="150" label="用户编号" />
+      <el-table-column prop="member_name" min-width="150" label="用户名称" />
+      <el-table-column prop="bucket_tm" min-width="150" label="绑定时间" />
+      <el-table-column prop="edit_tm" min-width="150" label="更新时间" />
       <el-table-column label="操作" width="360" fixed="right">
         <template #default="scope">
           <el-button type="primary" @click="handAdd(scope.row.id)">
