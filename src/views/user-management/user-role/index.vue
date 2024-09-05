@@ -17,6 +17,13 @@ const formInline = ref({
   name: "",
 });
 
+const form = ref({
+  id: "",
+  name: "",
+});
+
+const outerVisible = ref(false);
+
 const getList = () => {
   const query = {
     ...formInline.value,
@@ -29,7 +36,7 @@ const getList = () => {
   });
 };
 
-/** 提交 */
+/** 搜索 */
 const onSubmit = () => {
   currentPage.value = 1;
   pageSize.value = 10;
@@ -60,8 +67,41 @@ const handleDelete = (index: number, id: any) => {
   });
 };
 
-const handAdd = (id: any) => {
-  router.push({ path: "memberDetail", query: { id } });
+const handEdit = (id: any) => {
+  router.push({ path: "rolePermission", query: { id } });
+};
+
+const handAdd = (row: any) => {
+  if (row) {
+    form.value = row;
+  } else {
+    form.value = {
+      id: "",
+      name: "",
+    };
+  }
+  outerVisible.value = !outerVisible.value;
+};
+
+const handSubmit = async () => {
+  const params = {
+    ...form.value,
+  };
+  console.log("==待提交数据==", params);
+  let res: any = "";
+  if (params.id) {
+    res = await store.editRole(params);
+  } else {
+    res = await store.createRole(params);
+  }
+
+  if (res) {
+    ElMessage.success("提交成功");
+    const timer = setTimeout(() => {
+      handAdd("");
+      getList();
+    }, 500);
+  }
 };
 
 onMounted(() => {
@@ -103,7 +143,7 @@ onMounted(() => {
   <ContentBox title="查询结果">
     <template v-slot:workflow>
       <div>
-        <el-button type="primary" :icon="Plus" @click="handAdd()"
+        <el-button type="primary" :icon="Plus" @click="handAdd('')"
           >新增角色</el-button
         >
       </div>
@@ -119,11 +159,9 @@ onMounted(() => {
       }"
       style="width: 100%"
     >
-      <el-table-column prop="title" min-width="150" label="标题" />
-      <el-table-column prop="path" min-width="150" label="网址" />
-      <el-table-column prop="disc" min-width="150" label="页面描述" />
-      <el-table-column prop="creat_time" min-width="150" label="创建时间" />
-      <el-table-column prop="date" min-width="150" label="修改时间" />
+      <el-table-column prop="name" min-width="150" label="角色名称" />
+      <el-table-column prop="add_tm" min-width="150" label="创建时间" />
+      <el-table-column prop="edit_tm" min-width="150" label="修改时间" />
       <el-table-column label="操作" width="360" fixed="right">
         <template #default="scope">
           <el-button type="primary" @click="handAdd(scope.row)">
@@ -152,4 +190,19 @@ onMounted(() => {
       @current-change="handleCurrentChange"
     />
   </ContentBox>
+
+  <el-dialog v-model="outerVisible" title="编辑角色" width="800" center>
+    <el-form :inline="true" :model="form" label-width="150" label-suffix="：">
+      <el-form-item label="角色名称">
+        <el-input v-model="form.name" placeholder="请输入" clearable />
+      </el-form-item>
+    </el-form>
+
+    <template #footer>
+      <div class="dialog-footer">
+        <el-button @click="handAdd('')">取消</el-button>
+        <el-button type="primary" @click="handSubmit()"> 提交 </el-button>
+      </div>
+    </template>
+  </el-dialog>
 </template>

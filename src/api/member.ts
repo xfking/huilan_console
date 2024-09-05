@@ -127,6 +127,15 @@ const member = {
     });
   },
 
+  // 保存角色权限
+  setPermission(data: API.ListParams) {
+    return request({
+      url: "/admin/role/setPermission",
+      method: "post",
+      data,
+    });
+  },
+
   // 新增角色
   createRole(data: API.ListParams) {
     return request({

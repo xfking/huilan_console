@@ -7,20 +7,15 @@ import { ElMessage } from "element-plus";
 
 const router = useRouter();
 
-const list = ref([
-  {
-    title: "首页",
-    path: "home",
-    disc: "测试首页",
-  },
-]);
+const list = ref([]);
 const currentPage = ref(1);
 const pageSize = ref(10);
 const total = ref(0);
 const formInline = ref({
-  title: "",
-  path: "",
-  disc: "",
+  name: "",
+  id: "",
+  time: "",
+  type: "",
 });
 
 const getList = () => {
@@ -96,27 +91,32 @@ onMounted(() => {
     >
       <el-row :gutter="20">
         <el-col :xs="24" :sm="12" :lg="8" :xl="6">
-          <el-form-item label="标题">
+          <el-form-item label="用户名称">
             <el-input
-              v-model="formInline.title"
+              v-model="formInline.name"
               placeholder="请输入"
               clearable
             />
           </el-form-item>
         </el-col>
         <el-col :xs="24" :sm="12" :lg="8" :xl="6">
-          <el-form-item label="网址">
+          <el-form-item label="用户编号">
+            <el-input v-model="formInline.id" placeholder="请输入" clearable />
+          </el-form-item>
+        </el-col>
+        <el-col :xs="24" :sm="12" :lg="8" :xl="6">
+          <el-form-item label="预约日期">
             <el-input
-              v-model="formInline.path"
+              v-model="formInline.time"
               placeholder="请输入"
               clearable
             />
           </el-form-item>
         </el-col>
         <el-col :xs="24" :sm="12" :lg="8" :xl="6">
-          <el-form-item label="页面描述">
+          <el-form-item label="联系方式">
             <el-input
-              v-model="formInline.desc"
+              v-model="formInline.type"
               placeholder="请输入"
               clearable
             />
@@ -137,7 +137,7 @@ onMounted(() => {
     <template v-slot:workflow>
       <div>
         <el-button type="primary" :icon="Plus" @click="handAdd()"
-          >新增商品</el-button
+          >新增</el-button
         >
       </div>
     </template>
@@ -152,17 +152,19 @@ onMounted(() => {
       }"
       style="width: 100%"
     >
-      <el-table-column prop="title" min-width="150" label="标题" />
-      <el-table-column prop="path" min-width="150" label="网址" />
-      <el-table-column prop="disc" min-width="150" label="页面描述" />
+      <el-table-column prop="name" min-width="150" label="标题" />
+      <el-table-column prop="account" min-width="150" label="用户账号" />
+      <el-table-column prop="time" min-width="150" label="预约时间" />
+      <el-table-column prop="time" min-width="150" label="联系方式" />
+      <el-table-column prop="time" min-width="150" label="预约人数" />
+      <el-table-column prop="time" min-width="150" label="预约状态" />
       <el-table-column prop="creat_time" min-width="150" label="创建时间" />
-      <el-table-column prop="date" min-width="150" label="修改时间" />
+      <el-table-column prop="date" min-width="150" label="更新时间" />
       <el-table-column label="操作" width="360" fixed="right">
         <template #default="scope">
           <el-button type="primary" @click="handEdit(true, scope.row.id)">
             编辑
           </el-button>
-          <el-button @click="handEdit(false, scope.row.id)"> 查看 </el-button>
           <el-button
             type="danger"
             @click="handleDelete(scope.$index, scope.row.id)"

@@ -256,5 +256,18 @@ export const memberStore = defineStore({
           });
       });
     },
+    // 保存角色权限
+    setPermission(params: any) {
+      return new Promise((resolve, reject) => {
+        api.member
+          .setPermission(params)
+          .then((res) => {
+            resolve(res);
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      });
+    },
   },
 });
