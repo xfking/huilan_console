@@ -225,14 +225,13 @@ const onBack = () => {
               @updataDateSet="handUpdataDateSet"
               :data="item"
             />
-
             <!-- 卡片组件 -->
             <ComponentsCard
               v-if="item.type === 'card'"
               @updataDateSet="handUpdataDateSet"
               :data="item"
             />
-
+            <!-- 富文本 -->
             <ComponentsRichText
               v-if="item.type === 'richText'"
               @updataDateSet="handUpdataDateSet"
@@ -269,6 +268,8 @@ const onBack = () => {
     font-size: 14px;
     font-weight: 700;
     margin-right: 10px;
+    width: 100px;
+    text-align: right;
   }
 }
 </style>

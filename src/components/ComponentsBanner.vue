@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { reactive, ref, toRefs } from "vue";
 import ContentBox from "@/components/contentBox.vue";
+import { userStore } from "@/store/user";
+import { UploadProps } from "element-plus";
 
 interface IitemInfo {
   id?: string;
@@ -14,15 +16,17 @@ interface IitemInfo {
   appImg?: string;
 }
 
+const store = userStore();
+
 const emit = defineEmits(["updataDateSet"]);
 const props = defineProps({
   data: {
     default: {},
   },
 });
-const { data } = toRefs(props);
-const currentId: number = ref(0);
-const formData: IitemInfo = ref({
+const { data }: any = toRefs(props);
+const currentId: any = ref(0);
+const formData: any = ref({
   id: "",
   title: "",
   position: "top",
@@ -32,6 +36,16 @@ const formData: IitemInfo = ref({
   video: "",
   pcImg: "",
   appImg: "",
+});
+
+/** 上传参数 */
+const objDate: any = ref({
+  OSSAccessKeyId: "",
+  policy: "",
+  Signature: "",
+  key: "",
+  host: "",
+  dir: "",
 });
 
 /** 重置 */
@@ -80,6 +94,35 @@ const handleDelete = (index: number) => {
   if (index) {
     data.value.data.splice(index, 1);
   }
+};
+
+/** 图片上传 */
+const beforeAvatarUpload = (rawFile: any) => {
+  return new Promise((resolve, reject) => {
+    store
+      .fileUpload({})
+      .then((res: any) => {
+        objDate.value = {
+          OSSAccessKeyId: res.data.accessid,
+          policy: res.data.policy,
+          Signature: res.data.signature,
+          key: res.data.dir + rawFile.name,
+          host: res.data.host,
+          dir: res.data.dir,
+        };
+
+        resolve(true); // 继续上传
+      })
+      .catch(function (error) {
+        console.log(error);
+        reject(false);
+      });
+  });
+};
+
+/** 上传成功 */
+const updataVideo: UploadProps["onSuccess"] = (response, uploadFile) => {
+  formData.value.video = objDate.value.host + "/" + objDate.value.key;
 };
 </script>
 
@@ -141,11 +184,22 @@ const handleDelete = (index: number) => {
           </el-col>
           <el-col :xs="24" :sm="12" :lg="12" :xl="12">
             <el-form-item label="视频链接">
-              <el-input
-                v-model="formData.video"
-                placeholder="上传视频素材（建议大小20M）"
-                clearable
-              />
+              <el-upload
+                :action="objDate.host"
+                :data="objDate"
+                :on-remove="handleRemove"
+                :before-upload="beforeAvatarUpload"
+                :on-success="updataVideo"
+                :limit="1"
+                :show-file-list="false"
+              >
+                <el-input
+                  placeholder="上传视频素材（建议大小20M）"
+                  readonly
+                  clearable
+                />
+              </el-upload>
+              <span>{{ formData.video }}</span>
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12" :lg="12" :xl="12">
