@@ -16,7 +16,7 @@ const route = currentRoute.value;
 const store = contentStore();
 
 /** 初始数据 */
-const dataSet = ref({
+const dataSet: any = ref({
   id: "",
   title: "",
   url: "",
@@ -59,7 +59,7 @@ onMounted(() => {
 });
 
 const getInit = () => {
-  store.infoPages({ id: dataSet.value.id }).then((res) => {
+  store.infoPages({ id: dataSet.value.id }).then((res: any) => {
     dataSet.value = {
       ...res.data,
       state: !!res.data.state,
@@ -102,7 +102,7 @@ const onSubmit = async () => {
     content: JSON.stringify(dataSet.value.components),
   };
   console.log("==待提交数据==", dataSet.value);
-  let res = "";
+  let res: any = "";
   if (params.id) {
     res = await store.editPages(params);
   } else {

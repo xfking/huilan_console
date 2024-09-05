@@ -254,6 +254,24 @@ const content = {
       data,
     });
   },
+
+  // 获取配置
+  getSetting(data: API.ListParams) {
+    return request({
+      url: "/admin/systemSetting/getSetting",
+      method: "get",
+      params: data,
+    });
+  },
+
+  // 保存配置
+  putSetting(data: API.ListParams) {
+    return request({
+      url: "/admin/systemSetting/putSetting",
+      method: "post",
+      data,
+    });
+  },
 };
 
 export default content;

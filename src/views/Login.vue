@@ -3,7 +3,7 @@
     <img
       class="login-logo"
       width="300"
-      src="https://www.tencent.com/img/index/menu_logo.png"
+      src="/src/assets/index_back.png"
       alt="logo"
     />
     <div class="login-form">
@@ -76,8 +76,8 @@ const onSubmit = () => {
 
   .login-logo {
     position: absolute;
-    top: 32px;
-    left: 32px;
+    top: 90px;
+    left: 90px;
   }
 
   .login-forget {

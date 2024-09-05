@@ -12,7 +12,7 @@ const route = currentRoute.value;
 const store = memberStore();
 
 /** 初始数据 */
-const dataSet = ref({
+const dataSet: any = ref({
   id: "",
   email: "",
   mobile: "",
@@ -20,11 +20,12 @@ const dataSet = ref({
   nickname: "",
   surname: "",
   name: "",
-  born_year: "1995",
-  born_month: "9",
-  born_day: "1",
+  born_year: "",
+  born_month: "",
+  born_day: "",
   state: true,
   passwordCopy: "",
+  birthday: "",
 });
 
 /** 初始方法 */
@@ -41,8 +42,27 @@ const getInit = () => {
     dataSet.value = {
       ...res.data,
       state: !!res.data.state,
+      birthday:
+        res.data.born_year +
+        "-" +
+        res.data.born_month +
+        "-" +
+        res.data.born_day,
     };
   });
+};
+
+const handTime = (e: any) => {
+  if (e) {
+    const data = e.split("-");
+    dataSet.value.born_year = data[0];
+    dataSet.value.born_month = data[1];
+    dataSet.value.born_day = data[2];
+  } else {
+    dataSet.value.born_year = "";
+    dataSet.value.born_month = "";
+    dataSet.value.born_day = "";
+  }
 };
 
 /** 提交 */
@@ -120,10 +140,11 @@ const onBack = () => {
           <el-col :xs="24" :sm="12" :lg="12" :xl="12">
             <el-form-item label="生日">
               <el-date-picker
-                v-model="dataSet.born_day"
-                type="datetime"
-                value-format="x"
+                v-model="dataSet.birthday"
+                type="date"
+                value-format="YYYY-MM-DD"
                 placeholder="请选择日期"
+                @change="handTime"
                 clearable
               />
             </el-form-item>

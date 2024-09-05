@@ -7,9 +7,7 @@
       <div class="app-main">
         <router-view />
 
-        <div class="footer">
-          Copyright @2024 Sanhe.All Rights Reserved. 三和水泥 版权所有
-        </div>
+        <div class="footer">© 2024 回澜­­­­­­ - 川ICP备16005435号­­­-1</div>
       </div>
     </div>
   </div>

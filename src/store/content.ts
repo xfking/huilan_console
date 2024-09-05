@@ -414,5 +414,32 @@ export const contentStore = defineStore({
           });
       });
     },
+
+    // 获取配置
+    getSetting(params: any) {
+      return new Promise((resolve, reject) => {
+        api.content
+          .getSetting(params)
+          .then((res) => {
+            resolve(res);
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      });
+    },
+    // 保存配置
+    putSetting(params: any) {
+      return new Promise((resolve, reject) => {
+        api.content
+          .putSetting(params)
+          .then((res) => {
+            resolve(res);
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      });
+    },
   },
 });
