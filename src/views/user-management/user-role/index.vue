@@ -4,23 +4,17 @@ import { useRouter } from "vue-router";
 import ContentBox from "@/components/contentbox.vue";
 import { Search, Plus } from "@element-plus/icons-vue";
 import { ElMessage } from "element-plus";
+import { memberStore } from "@/store/member";
 
 const router = useRouter();
+const store = memberStore();
 
-const list = ref([
-  {
-    title: "首页",
-    path: "home",
-    disc: "测试首页",
-  },
-]);
+const list = ref([]);
 const currentPage = ref(1);
 const pageSize = ref(10);
 const total = ref(0);
 const formInline = ref({
-  title: "",
-  path: "",
-  disc: "",
+  name: "",
 });
 
 const getList = () => {
@@ -29,10 +23,10 @@ const getList = () => {
     page: currentPage.value,
     per_page: pageSize.value,
   };
-  // store.pageCement(query).then((res: any) => {
-  //   list.value = res.data.data;
-  //   total.value = res.data.total;
-  // });
+  store.pageRole(query).then((res: any) => {
+    list.value = res.data.data;
+    total.value = res.data.total;
+  });
 };
 
 /** 提交 */
@@ -44,9 +38,7 @@ const onSubmit = () => {
 
 const onReset = () => {
   formInline.value = {
-    title: "",
-    path: "",
-    disc: "",
+    name: "",
   };
 };
 
@@ -61,22 +53,15 @@ const handleCurrentChange = (val: number) => {
   getList();
 };
 
-const handEdit = (flg: boolean, id: any) => {
-  router.push({
-    path: "pagesDetail",
-    query: { isEdit: flg ? "Y" : "N", id },
+const handleDelete = (index: number, id: any) => {
+  store.delRole({ id }).then(() => {
+    ElMessage.success("删除成功");
+    list.value.splice(index - 1, 1);
   });
 };
 
-const handleDelete = (index: number, id: any) => {
-  // store.delSupplier({ id }).then(() => {
-  //   ElMessage.success("删除成功");
-  //   list.value.splice(index - 1, 1);
-  // });
-};
-
-const handAdd = () => {
-  router.push({ path: "pagesDetail" });
+const handAdd = (id: any) => {
+  router.push({ path: "memberDetail", query: { id } });
 };
 
 onMounted(() => {
@@ -96,27 +81,9 @@ onMounted(() => {
     >
       <el-row :gutter="20">
         <el-col :xs="24" :sm="12" :lg="8" :xl="6">
-          <el-form-item label="标题">
+          <el-form-item label="角色名称">
             <el-input
-              v-model="formInline.title"
-              placeholder="请输入"
-              clearable
-            />
-          </el-form-item>
-        </el-col>
-        <el-col :xs="24" :sm="12" :lg="8" :xl="6">
-          <el-form-item label="网址">
-            <el-input
-              v-model="formInline.path"
-              placeholder="请输入"
-              clearable
-            />
-          </el-form-item>
-        </el-col>
-        <el-col :xs="24" :sm="12" :lg="8" :xl="6">
-          <el-form-item label="页面描述">
-            <el-input
-              v-model="formInline.desc"
+              v-model="formInline.name"
               placeholder="请输入"
               clearable
             />
@@ -137,7 +104,7 @@ onMounted(() => {
     <template v-slot:workflow>
       <div>
         <el-button type="primary" :icon="Plus" @click="handAdd()"
-          >新增商品</el-button
+          >新增角色</el-button
         >
       </div>
     </template>
@@ -159,15 +126,17 @@ onMounted(() => {
       <el-table-column prop="date" min-width="150" label="修改时间" />
       <el-table-column label="操作" width="360" fixed="right">
         <template #default="scope">
-          <el-button type="primary" @click="handEdit(true, scope.row.id)">
+          <el-button type="primary" @click="handAdd(scope.row)">
             编辑
           </el-button>
-          <el-button @click="handEdit(false, scope.row.id)"> 查看 </el-button>
           <el-button
             type="danger"
             @click="handleDelete(scope.$index, scope.row.id)"
           >
             删除
+          </el-button>
+          <el-button style="success" @click="handEdit(scope.row.id)">
+            设置权限
           </el-button>
         </template>
       </el-table-column>

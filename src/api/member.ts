@@ -100,6 +100,65 @@ const member = {
       data,
     });
   },
+
+  // 角色列表
+  pageRole(data: API.ListParams) {
+    return request({
+      url: "/admin/role/pageRole",
+      method: "get",
+      params: data,
+    });
+  },
+  // 角色详情
+  infoRole(data: API.ListParams) {
+    return request({
+      url: "/admin/role/infoRole",
+      method: "get",
+      params: data,
+    });
+  },
+
+  // 角色权限
+  getPermission(data: API.ListParams) {
+    return request({
+      url: "/admin/role/getPermission",
+      method: "get",
+      params: data,
+    });
+  },
+
+  // 新增角色
+  createRole(data: API.ListParams) {
+    return request({
+      url: "/admin/role/createRole",
+      method: "post",
+      data,
+    });
+  },
+  // 修改角色
+  editRole(data: API.ListParams) {
+    return request({
+      url: "/admin/role/editRole",
+      method: "post",
+      data,
+    });
+  },
+  // 删除角色
+  delRole(data: API.ListParams) {
+    return request({
+      url: "/admin/role/delRole",
+      method: "post",
+      data,
+    });
+  },
+  // 开启/禁用角色
+  stateRole(data: API.ListParams) {
+    return request({
+      url: "/admin/role/stateRole",
+      method: "post",
+      data,
+    });
+  },
 };
 
 export default member;

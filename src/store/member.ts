@@ -163,5 +163,98 @@ export const memberStore = defineStore({
           });
       });
     },
+
+    // 角色列表
+    pageRole(params: any) {
+      return new Promise((resolve, reject) => {
+        api.member
+          .pageRole(params)
+          .then((res) => {
+            resolve(res);
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      });
+    },
+    // 角色详情
+    infoRole(params: any) {
+      return new Promise((resolve, reject) => {
+        api.member
+          .infoRole(params)
+          .then((res) => {
+            resolve(res);
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      });
+    },
+
+    // 角色权限
+    getPermission(params: any) {
+      return new Promise((resolve, reject) => {
+        api.member
+          .getPermission(params)
+          .then((res) => {
+            resolve(res);
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      });
+    },
+    // 新增角色
+    createRole(params: any) {
+      return new Promise((resolve, reject) => {
+        api.member
+          .createRole(params)
+          .then((res) => {
+            resolve(res);
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      });
+    },
+    // 修改角色
+    editRole(params: any) {
+      return new Promise((resolve, reject) => {
+        api.member
+          .editRole(params)
+          .then((res) => {
+            resolve(res);
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      });
+    },
+    // 删除角色
+    delRole(params: any) {
+      return new Promise((resolve, reject) => {
+        api.member
+          .delRole(params)
+          .then((res) => {
+            resolve(res);
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      });
+    },
+    // 开启/禁用角色
+    stateRole(params: any) {
+      return new Promise((resolve, reject) => {
+        api.member
+          .stateRole(params)
+          .then((res) => {
+            resolve(res);
+          })
+          .catch((err) => {
+            reject(err);
+          });
+      });
+    },
   },
 });
