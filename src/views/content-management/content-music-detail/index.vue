@@ -123,7 +123,11 @@ const onBack = () => {
           </el-col>
           <el-col :span="24">
             <el-form-item label="音乐文件">
-              <ComponentsUploadImg :img="dataSet.url" />
+              <ComponentsUploadImg
+                :img="dataSet.url"
+                :isVideo="true"
+                @updata:img="dataSet.url = $event"
+              />
             </el-form-item>
           </el-col>
         </el-row>

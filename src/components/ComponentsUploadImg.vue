@@ -12,10 +12,14 @@ const props = defineProps({
   isEdit: {
     default: false,
   },
+  isVideo: {
+    default: false,
+  },
 });
 
 const { img } = toRefs(props);
 const image = ref(img.value);
+const videoList = ref([]);
 
 const store = userStore();
 
@@ -29,7 +33,9 @@ const objDate: any = ref({
   dir: "",
 });
 
-onMounted(() => {});
+onMounted(() => {
+  // videoList = [image.value];
+});
 
 /** 图片上传 */
 const beforeAvatarUpload = (rawFile: any) => {
@@ -63,6 +69,11 @@ const handleAvatarSuccess: UploadProps["onSuccess"] = (
   image.value = objDate.value.host + "/" + objDate.value.key;
   emit("updata:img", image.value);
 };
+
+const handleRemove: UploadProps["onRemove"] = (file, uploadFiles) => {
+  image.value = "";
+  emit("updata:img", image.value);
+};
 </script>
 
 <template>
@@ -70,14 +81,26 @@ const handleAvatarSuccess: UploadProps["onSuccess"] = (
     class="avatar-uploader"
     :action="objDate.host"
     :data="objDate"
-    :show-file-list="false"
+    :limit="1"
+    :file-list="videoList"
+    :on-remove="handleRemove"
+    :show-file-list="isVideo"
     :before-upload="beforeAvatarUpload"
     :on-success="handleAvatarSuccess"
     :disabled="isEdit === 'N'"
   >
-    <img v-if="img" :src="img" class="avatar" />
-    <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
-    <!-- <el-icon><Plus /></el-icon> -->
+    <template v-if="isVideo">
+      <el-input
+        placeholder="上传音频素材（建议大小20M）"
+        readonly
+        clearable
+        style="width: 240px"
+      />
+    </template>
+    <template v-else>
+      <img v-if="img" :src="img" class="avatar" />
+      <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
+    </template>
   </el-upload>
 </template>
 
