@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { onMounted, reactive, ref, toRefs } from "vue";
 import ContentBox from "@/components/contentBox.vue";
+import ComponentsUploadImg from "@/components/ComponentsUploadImg.vue";
+import { userStore } from "@/store/user";
 
 interface IitemInfo {
   id?: string;
@@ -13,13 +15,17 @@ interface IitemInfo {
   appImg?: string;
 }
 
+const store = userStore();
 const emit = defineEmits(["updataDateSet"]);
 const props = defineProps({
   data: {
     default: {},
   },
+  pathOptions: {
+    default: [],
+  },
 });
-const { data } = toRefs(props);
+const { data, pathOptions } = toRefs(props);
 const currentId: number = ref(0);
 const formData: IitemInfo = ref({
   id: "",
@@ -28,8 +34,20 @@ const formData: IitemInfo = ref({
   path: "",
   desciption: "",
   buttonText: "",
+  video: "",
   pcImg: "",
   appImg: "",
+});
+
+const videoList = ref([]);
+/** 上传参数 */
+const objDate: any = ref({
+  OSSAccessKeyId: "",
+  policy: "",
+  Signature: "",
+  key: "",
+  host: "",
+  dir: "",
 });
 
 onMounted(() => {
@@ -42,7 +60,6 @@ onMounted(() => {
 const handSubmit = () => {
   const newData = Object.assign({}, formData.value);
   data.value.data = newData;
-  console.log(22222222222, data.value);
 };
 </script>
 
@@ -88,45 +105,70 @@ const handSubmit = () => {
             <el-form-item label="跳转按钮文案">
               <el-input
                 v-model="formData.buttonText"
-                placeholder="请输入"
+                placeholder="buttonText"
                 clearable
               />
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12" :lg="12" :xl="12">
             <el-form-item label="跳转链接">
-              <el-input
+              <el-select
                 v-model="formData.path"
-                placeholder="请输入"
-                clearable
-              />
+                filterable
+                allow-create
+                :reserve-keyword="false"
+                placeholder="请选择"
+              >
+                <el-option
+                  v-for="item in pathOptions"
+                  :key="item.url"
+                  :label="item.title"
+                  :value="item.url"
+                />
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12" :lg="12" :xl="12">
             <el-form-item label="视频链接">
-              <el-input
-                v-model="formData.video"
-                placeholder="上传视频素材（建议大小20M）"
-                clearable
-              />
+              <el-upload
+                style="width: 100%"
+                :action="objDate.host"
+                :data="objDate"
+                :on-remove="handleRemove"
+                :before-upload="beforeAvatarUpload"
+                :on-success="updataVideo"
+                :limit="1"
+                :file-list="videoList"
+              >
+                <el-input
+                  placeholder="上传视频素材（建议大小20M）"
+                  readonly
+                  clearable
+                  style="width: 240px"
+                />
+              </el-upload>
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12" :lg="12" :xl="12">
             <el-form-item label="PC素材">
-              <el-input
-                v-model="formData.pcImg"
-                placeholder="上传PC素材（建议尺寸1920px * 1080px）"
-                clearable
-              />
+              <div>
+                <ComponentsUploadImg
+                  :img="formData.pcImg"
+                  @updata:img="formData.pcImg = $event"
+                />
+                <div class="tips">上传PC素材（建议尺寸1920px * 1080px）</div>
+              </div>
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12" :lg="12" :xl="12">
             <el-form-item label="APP素材">
-              <el-input
-                v-model="formData.appImg"
-                placeholder="上传mobile素材（建议尺寸750px * 800px）"
-                clearable
-              />
+              <div>
+                <ComponentsUploadImg
+                  :img="formData.appImg"
+                  @updata:img="formData.appImg = $event"
+                />
+                <div class="tips">上传mobile素材（建议尺寸750px * 800px）</div>
+              </div>
             </el-form-item>
           </el-col>
         </el-row>

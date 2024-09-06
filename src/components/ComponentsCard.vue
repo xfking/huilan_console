@@ -1,6 +1,8 @@
 <script lang="ts" setup>
 import { reactive, ref, toRefs } from "vue";
 import ContentBox from "@/components/contentBox.vue";
+import { userStore } from "@/store/user";
+import ComponentsUploadImg from "@/components/ComponentsUploadImg.vue";
 
 interface IitemInfo {
   id?: string;
@@ -12,18 +14,25 @@ interface IitemInfo {
   video?: string;
   pcImg?: string;
   appImg?: string;
+  cardType?: string;
 }
+
+const store = userStore();
 
 const emit = defineEmits(["updataDateSet"]);
 const props = defineProps({
   data: {
     default: {},
   },
+  pathOptions: {
+    default: [],
+  },
 });
-const { data } = toRefs(props);
+const { data, pathOptions } = toRefs(props);
 const currentId: number = ref(0);
 const formData: IitemInfo = ref({
   id: "",
+  position: "top",
   title: "",
   path: "",
   desciption: "",
@@ -31,6 +40,17 @@ const formData: IitemInfo = ref({
   video: "",
   pcImg: "",
   appImg: "",
+});
+
+const videoList = ref([]);
+/** 上传参数 */
+const objDate: any = ref({
+  OSSAccessKeyId: "",
+  policy: "",
+  Signature: "",
+  key: "",
+  host: "",
+  dir: "",
 });
 
 /** 重置 */
@@ -76,9 +96,40 @@ const handEdit = (row: IitemInfo) => {
 };
 
 const handleDelete = (index: number) => {
-  if (index) {
-    data.value.data.splice(index, 1);
-  }
+  data.value.data.splice(index, 1);
+};
+
+/** 视频上传 */
+const beforeAvatarUpload = (rawFile: any) => {
+  return new Promise((resolve, reject) => {
+    store
+      .fileUpload({})
+      .then((res: any) => {
+        objDate.value = {
+          OSSAccessKeyId: res.data.accessid,
+          policy: res.data.policy,
+          Signature: res.data.signature,
+          key: res.data.dir + rawFile.name,
+          host: res.data.host,
+          dir: res.data.dir,
+        };
+
+        resolve(true); // 继续上传
+      })
+      .catch(function (error) {
+        console.log(error);
+        reject(false);
+      });
+  });
+};
+
+/** 上传成功 */
+const updataVideo: UploadProps["onSuccess"] = (response, uploadFile) => {
+  formData.value.video = objDate.value.host + "/" + objDate.value.key;
+};
+
+const handleRemove: UploadProps["onRemove"] = (file, uploadFiles) => {
+  formData.value.video = "";
 };
 </script>
 
@@ -94,7 +145,7 @@ const handleDelete = (index: number) => {
       >
         <el-row :gutter="20">
           <el-col :xs="24" :sm="24" :lg="24" :xl="24">
-            <el-form-item label="标题定位">
+            <el-form-item label="卡片类型">
               <el-radio-group v-model="data.cardType">
                 <el-radio value="normal" size="large">普通</el-radio>
                 <el-radio value="grid" size="large">宫格</el-radio>
@@ -121,48 +172,82 @@ const handleDelete = (index: number) => {
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12" :lg="12" :xl="12">
+            <el-form-item label="标题定位">
+              <el-radio-group v-model="data.position">
+                <el-radio value="top" size="large">顶部</el-radio>
+                <el-radio value="bottom" size="large">底部</el-radio>
+                <el-radio value="center" size="large">正中</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+          <el-col :xs="24" :sm="12" :lg="12" :xl="12">
             <el-form-item label="跳转按钮文案">
               <el-input
                 v-model="formData.buttonText"
-                placeholder="请输入"
+                placeholder="例如：探索更多"
                 clearable
               />
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12" :lg="12" :xl="12">
             <el-form-item label="跳转链接">
-              <el-input
+              <el-select
                 v-model="formData.path"
-                placeholder="请输入"
-                clearable
-              />
+                filterable
+                allow-create
+                :reserve-keyword="false"
+                placeholder="请选择"
+              >
+                <el-option
+                  v-for="item in pathOptions"
+                  :key="item.url"
+                  :label="item.title"
+                  :value="item.url"
+                />
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12" :lg="12" :xl="12">
             <el-form-item label="视频链接">
-              <el-input
-                v-model="formData.video"
-                placeholder="上传视频素材（建议大小20M）"
-                clearable
-              />
+              <el-upload
+                style="width: 100%"
+                :action="objDate.host"
+                :data="objDate"
+                :on-remove="handleRemove"
+                :before-upload="beforeAvatarUpload"
+                :on-success="updataVideo"
+                :limit="1"
+                :file-list="videoList"
+              >
+                <el-input
+                  placeholder="上传视频素材（建议大小20M）"
+                  readonly
+                  clearable
+                  style="width: 240px"
+                />
+              </el-upload>
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12" :lg="12" :xl="12">
             <el-form-item label="PC素材">
-              <el-input
-                v-model="formData.pcImg"
-                placeholder="上传PC素材（建议尺寸1920px * 1080px）"
-                clearable
-              />
+              <div>
+                <ComponentsUploadImg
+                  :img="formData.pcImg"
+                  @updata:img="formData.pcImg = $event"
+                />
+                <div class="tips">上传PC素材（建议尺寸1920px * 1080px）</div>
+              </div>
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12" :lg="12" :xl="12">
             <el-form-item label="APP素材">
-              <el-input
-                v-model="formData.appImg"
-                placeholder="上传mobile素材（建议尺寸750px * 800px）"
-                clearable
-              />
+              <div>
+                <ComponentsUploadImg
+                  :img="formData.appImg"
+                  @updata:img="formData.appImg = $event"
+                />
+                <div class="tips">上传mobile素材（建议尺寸750px * 800px）</div>
+              </div>
             </el-form-item>
           </el-col>
         </el-row>
@@ -186,8 +271,16 @@ const handleDelete = (index: number) => {
       >
         <el-table-column prop="title" min-width="150" label="标题" />
         <el-table-column prop="desciption" min-width="150" label="描述" />
-        <el-table-column prop="pcImg" min-width="150" label="PC素材" />
-        <el-table-column prop="appImg" min-width="150" label="APP素材" />
+        <el-table-column prop="pcImg" min-width="150" label="PC素材">
+          <template #default="scope">
+            <img :src="scope.row.pcImg" class="img_pre" alt="PC素材" />
+          </template>
+        </el-table-column>
+        <el-table-column prop="appImg" min-width="150" label="APP素材">
+          <template #default="scope">
+            <img :src="scope.row.appImg" class="img_pre" alt="APP素材" />
+          </template>
+        </el-table-column>
         <el-table-column prop="path" min-width="150" label="跳转链接" />
         <el-table-column
           prop="buttonText"
@@ -212,5 +305,13 @@ const handleDelete = (index: number) => {
 <style lang="less" scoped>
 .component_box {
   padding: 20px 0;
+}
+.tips {
+  text-align: center;
+  font-size: 12px;
+  color: #999;
+}
+.img_pre {
+  width: 125px;
 }
 </style>

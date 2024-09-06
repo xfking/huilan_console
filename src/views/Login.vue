@@ -6,6 +6,7 @@
       src="/src/assets/index_back.png"
       alt="logo"
     />
+    <img class="back-logo" width="300" src="/src/assets/back6.png" alt="logo" />
     <div class="login-form">
       <div class="title">登 录</div>
       <div class="form-box">
@@ -78,6 +79,15 @@ const onSubmit = () => {
     position: absolute;
     top: 90px;
     left: 90px;
+    width: 200px;
+  }
+
+  .back-logo {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 450px;
   }
 
   .login-forget {
@@ -92,7 +102,7 @@ const onSubmit = () => {
     right: 300px;
     transform: translateY(-50%);
     width: 450px;
-    height: 600px;
+    height: 540px;
     background-color: #ffffff;
     border-radius: 12px;
     box-shadow: 5px 5px 10px rgba(0, 52, 181, 0.5);

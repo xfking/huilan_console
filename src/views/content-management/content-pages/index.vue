@@ -5,6 +5,7 @@ import ContentBox from "@/components/contentBox.vue";
 import { Search, Plus } from "@element-plus/icons-vue";
 import { ElMessage } from "element-plus";
 import { contentStore } from "@/store/content";
+import { whitePath } from "@/utils";
 
 const router = useRouter();
 const store = contentStore();
@@ -168,12 +169,14 @@ onMounted(() => {
             编辑
           </el-button>
           <el-button
+            v-if="whitePath.indexOf(scope.row.url) === -1"
             type="danger"
             @click="handleDelete(scope.$index, scope.row.id)"
           >
             删除
           </el-button>
           <el-button
+            v-if="whitePath.indexOf(scope.row.url) === -1"
             :type="scope.row.state ? 'danger' : 'success'"
             @click="handState(scope.row)"
           >

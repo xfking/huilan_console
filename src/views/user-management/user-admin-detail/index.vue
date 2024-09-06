@@ -2,7 +2,7 @@
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import ContentBox from "@/components/contentbox.vue";
-import ComponentsUploadImg from "@/components/componentsuploadimg.vue";
+import ComponentsUploadImg from "@/components/ComponentsUploadImg.vue";
 import { ElMessage } from "element-plus";
 import { memberStore } from "@/store/member";
 

@@ -14,11 +14,12 @@ export const isoToDateStrFormat = (isoStr: any): string => {
   const minutes = date.getMinutes();
   const seconds = date.getSeconds();
   // 构建日期格式字符串
-  const formattedDate = `${year}-${month < 10 ? "0" : ""}${month}-${
-    day < 10 ? "0" : ""
-  }${day} ${hours < 10 ? "0" : ""}${hours}:${
-    minutes < 10 ? "0" : ""
-  }${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+  const formattedDate = `${year}-${month < 10 ? "0" : ""}${month}-${day < 10 ? "0" : ""
+    }${day} ${hours < 10 ? "0" : ""}${hours}:${minutes < 10 ? "0" : ""
+    }${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
 
   return formattedDate;
 };
+
+/** 页面白名单 */
+export const whitePath = ["home", "news", "team", "music", "barrel"]; 

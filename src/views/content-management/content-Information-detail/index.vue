@@ -2,8 +2,8 @@
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import ContentBox from "@/components/contentBox.vue";
-import ComponentsRichText from "@/components/componentsRichText.vue";
-import ComponentsUploadImg from "@/components/componentsUploadImg.vue";
+import ComponentsRichText from "@/components/ComponentsRichText.vue";
+import ComponentsUploadImg from "@/components/ComponentsUploadImg.vue";
 import { contentStore } from "@/store/content";
 import { ElMessage } from "element-plus";
 

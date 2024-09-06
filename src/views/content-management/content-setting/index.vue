@@ -3,7 +3,7 @@ import { ref, onMounted } from "vue";
 import { ElMessage, ISelectProps } from "element-plus";
 import ContentBox from "@/components/contentBox.vue";
 import { contentStore } from "@/store/content";
-import ComponentsUploadImg from "@/components/componentsuploadimg.vue";
+import ComponentsUploadImg from "@/components/ComponentsUploadImg.vue";
 import { Delete } from "@element-plus/icons-vue";
 
 const store = contentStore();
@@ -24,14 +24,23 @@ const dataSet: any = ref({
   components: [],
 });
 
+const pathOptions = ref([]);
+
 /** 初始方法 */
 onMounted(() => {
+  getAllPages();
   init();
 });
 
 const init = () => {
   store.getSetting({ setting_key_string: "page_setting" }).then((res: any) => {
     dataSet.value = res.data;
+  });
+};
+
+const getAllPages = () => {
+  store.getAllPages({}).then((res: any) => {
+    pathOptions.value = res.data;
   });
 };
 
@@ -198,7 +207,20 @@ const onSubmit = () => {
               <el-col :xs="24" :sm="12" :lg="12" :xl="12">
                 <div class="flex flex_align">
                   <div class="groups_label">跳转链接</div>
-                  <el-input v-model="list.url" placeholder="请输入" clearable />
+                  <el-select
+                    v-model="list.url"
+                    filterable
+                    allow-create
+                    :reserve-keyword="false"
+                    placeholder="请选择"
+                  >
+                    <el-option
+                      v-for="item in pathOptions"
+                      :key="item.url"
+                      :label="item.title"
+                      :value="item.url"
+                    />
+                  </el-select>
                 </div>
               </el-col>
             </el-row>

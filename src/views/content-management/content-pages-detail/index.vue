@@ -4,11 +4,12 @@ import { ElMessage, ISelectProps } from "element-plus";
 import { Plus, DeleteFilled } from "@element-plus/icons-vue";
 import { useRouter } from "vue-router";
 import ContentBox from "@/components/contentBox.vue";
-import ComponentsBanner from "@/components/componentsBanner.vue";
+import ComponentsBanner from "@/components/ComponentsBanner.vue";
 import ComponentsSingle from "@/components/componentsSingleImg.vue";
-import ComponentsCard from "@/components/componentsCard.vue";
-import ComponentsRichText from "@/components/componentsRichTextBox.vue";
+import ComponentsCard from "@/components/ComponentsCard.vue";
+import ComponentsRichText from "@/components/ComponentsRichTextBox.vue";
 import { contentStore } from "@/store/content";
+import { whitePath } from "@/utils";
 
 const router = useRouter();
 const { currentRoute } = useRouter();
@@ -24,6 +25,10 @@ const dataSet: any = ref({
   state: true,
   components: [],
 });
+
+const disabled: boolean = ref(false);
+
+const pathOptions = ref([]);
 
 /** 组件类型下拉选项 */
 const componentsType = ref([
@@ -51,12 +56,19 @@ const componentsType = ref([
 
 /** 初始方法 */
 onMounted(() => {
+  getAllPages();
   if (route.query.id) {
     dataSet.value.id = route.query.id;
 
     getInit();
   }
 });
+
+const getAllPages = () => {
+  store.getAllPages({}).then((res: any) => {
+    pathOptions.value = res.data;
+  });
+};
 
 const getInit = () => {
   store.infoPages({ id: dataSet.value.id }).then((res: any) => {
@@ -65,6 +77,10 @@ const getInit = () => {
       state: !!res.data.state,
       components: res.data.content,
     };
+
+    if (whitePath.indexOf(res.data.url) >= 0) {
+      disabled.value = true;
+    }
   });
 };
 
@@ -144,7 +160,12 @@ const onBack = () => {
           </el-col>
           <el-col :xs="24" :sm="12" :lg="12" :xl="12">
             <el-form-item label="页面链接">
-              <el-input v-model="dataSet.url" placeholder="请输入" clearable />
+              <el-input
+                v-model="dataSet.url"
+                :disabled="disabled"
+                placeholder="例如：home"
+                clearable
+              />
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12" :lg="12" :xl="12">
@@ -162,6 +183,7 @@ const onBack = () => {
             <el-form-item label="启用页面">
               <el-switch
                 v-model="dataSet.state"
+                :disabled="disabled"
                 style="
                   --el-switch-on-color: #13ce66;
                   --el-switch-off-color: #ff4949;
@@ -174,7 +196,11 @@ const onBack = () => {
     </ContentBox>
     <!-- 页面配置 -->
     <ContentBox title="页面配置">
-      <el-button type="primary" :icon="Plus" @click="handAdd()"
+      <el-button
+        type="primary"
+        :icon="Plus"
+        :disabled="disabled && dataSet.url !== 'home'"
+        @click="handAdd()"
         >新增组件</el-button
       >
 
@@ -193,6 +219,7 @@ const onBack = () => {
                 v-model="item.type"
                 placeholder="选择类型"
                 style="width: 240px"
+                :disabled="disabled && dataSet.url !== 'home'"
                 @change="handChange($event, index)"
               >
                 <el-option
@@ -207,6 +234,7 @@ const onBack = () => {
             <el-button
               type="danger"
               :icon="DeleteFilled"
+              :disabled="disabled && dataSet.url !== 'home'"
               @click="handDel(index)"
               >删除组件</el-button
             >
@@ -218,18 +246,21 @@ const onBack = () => {
               v-if="item.type === 'banner'"
               @updataDateSet="handUpdataDateSet"
               :data="item"
+              :pathOptions="pathOptions"
             />
             <!-- 单图组件 -->
             <ComponentsSingle
               v-if="item.type === 'single'"
               @updataDateSet="handUpdataDateSet"
               :data="item"
+              :pathOptions="pathOptions"
             />
             <!-- 卡片组件 -->
             <ComponentsCard
               v-if="item.type === 'card'"
               @updataDateSet="handUpdataDateSet"
               :data="item"
+              :pathOptions="pathOptions"
             />
             <!-- 富文本 -->
             <ComponentsRichText
