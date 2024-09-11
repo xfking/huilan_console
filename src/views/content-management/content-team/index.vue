@@ -159,7 +159,7 @@ onMounted(() => {
     >
       <el-table-column prop="name" min-width="150" label="团队名称" />
       <el-table-column prop="desc" min-width="150" label="团队简介" />
-      <el-table-column prop="content" min-width="150" label="团队描述" />
+      <!-- <el-table-column prop="content" min-width="150" label="团队描述" /> -->
       <el-table-column prop="add_tm" min-width="150" label="创建时间" />
       <el-table-column prop="edit_tm" min-width="150" label="修改时间" />
       <el-table-column label="操作" width="360" fixed="right">

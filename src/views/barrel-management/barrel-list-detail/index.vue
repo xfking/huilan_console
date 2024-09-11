@@ -107,6 +107,14 @@ const onBack = () => {
                 placeholder="请输入"
                 clearable
               />
+              <el-select
+                v-model="dataSet.flavour"
+                filterable
+                placeholder="请选择"
+              >
+                <el-option label="泥煤风味" value="泥煤风味" />
+                <el-option label="非泥煤风味" value="非泥煤风味" />
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12" :lg="12" :xl="12">

@@ -158,7 +158,7 @@ onMounted(() => {
     >
       <el-table-column prop="title" min-width="150" label="新闻标题" />
       <el-table-column prop="summary" min-width="150" label="新闻简介" />
-      <el-table-column prop="content" min-width="150" label="新闻描述" />
+      <!-- <el-table-column prop="content" min-width="150" label="新闻描述" /> -->
       <el-table-column prop="add_tm" min-width="150" label="创建时间" />
       <el-table-column prop="edit_tm" min-width="150" label="修改时间" />
       <el-table-column label="操作" width="360" fixed="right">
