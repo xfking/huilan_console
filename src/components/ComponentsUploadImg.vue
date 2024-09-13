@@ -68,6 +68,7 @@ const handleAvatarSuccess: UploadProps["onSuccess"] = (
 ) => {
   image.value = objDate.value.host + "/" + objDate.value.key;
   emit("updata:img", image.value);
+  console.log("-------------", image.value, img.value);
 };
 
 const handleRemove: UploadProps["onRemove"] = (file, uploadFiles) => {
