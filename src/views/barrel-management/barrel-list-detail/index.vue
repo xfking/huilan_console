@@ -5,6 +5,7 @@ import ContentBox from "@/components/contentbox.vue";
 import ComponentsUploadImg from "@/components/ComponentsUploadImg.vue";
 import { barrelStore } from "@/store/barrel";
 import { ElMessage } from "element-plus";
+import { userStore } from "@/store/user";
 
 const router = useRouter();
 const { currentRoute } = useRouter();
@@ -102,11 +103,6 @@ const onBack = () => {
           </el-col>
           <el-col :xs="24" :sm="12" :lg="12" :xl="12">
             <el-form-item label="风味">
-              <el-input
-                v-model="dataSet.flavour"
-                placeholder="请输入"
-                clearable
-              />
               <el-select
                 v-model="dataSet.flavour"
                 filterable

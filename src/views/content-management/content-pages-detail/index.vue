@@ -8,6 +8,7 @@ import ComponentsBanner from "@/components/ComponentsBanner.vue";
 import ComponentsSingle from "@/components/componentsSingleImg.vue";
 import ComponentsCard from "@/components/ComponentsCard.vue";
 import ComponentsRichText from "@/components/ComponentsRichTextBox.vue";
+import ComponentsCustom from "@/components/ComponentsCustom.vue";
 import { contentStore } from "@/store/content";
 import { whitePath } from "@/utils";
 
@@ -49,8 +50,8 @@ const componentsType = ref([
     value: "richText",
   },
   {
-    text: "团队",
-    value: "team",
+    text: "自定义轮播",
+    value: "custom",
   },
 ]);
 
@@ -267,6 +268,14 @@ const onBack = () => {
               v-if="item.type === 'richText'"
               @updataDateSet="handUpdataDateSet"
               :data="item"
+            />
+
+            <!-- 自定义轮播 -->
+            <ComponentsCustom
+              v-if="item.type === 'custom'"
+              @updataDateSet="handUpdataDateSet"
+              :data="item"
+              :pathOptions="pathOptions"
             />
           </template>
         </div>

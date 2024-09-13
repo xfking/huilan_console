@@ -3,6 +3,7 @@ import { onMounted, reactive, ref, toRefs } from "vue";
 import ContentBox from "@/components/contentBox.vue";
 import ComponentsUploadImg from "@/components/ComponentsUploadImg.vue";
 import { userStore } from "@/store/user";
+import { CircleClose } from "@element-plus/icons-vue";
 
 interface IitemInfo {
   id?: string;
@@ -27,7 +28,7 @@ const props = defineProps({
 });
 const { data, pathOptions } = toRefs(props);
 const currentId: number = ref(0);
-const formData: IitemInfo = ref({
+const formData: any = ref({
   id: "",
   title: "",
   position: "top",
@@ -35,6 +36,7 @@ const formData: IitemInfo = ref({
   desciption: "",
   buttonText: "",
   video: "",
+  videoName: "",
   pcImg: "",
   appImg: "",
 });
@@ -53,6 +55,9 @@ const objDate: any = ref({
 onMounted(() => {
   if (data.value) {
     formData.value = { ...formData.value, ...data.value.data };
+    if (formData.value.video && !formData.value.videoName) {
+      formData.value.videoName = formData.value.video.split("/img")[1];
+    }
   }
 });
 
@@ -60,6 +65,41 @@ onMounted(() => {
 const handSubmit = () => {
   const newData = Object.assign({}, formData.value);
   data.value.data = newData;
+};
+
+/** 视频上传 */
+const beforeAvatarUpload = (rawFile: any) => {
+  return new Promise((resolve, reject) => {
+    store
+      .fileUpload({})
+      .then((res: any) => {
+        objDate.value = {
+          OSSAccessKeyId: res.data.accessid,
+          policy: res.data.policy,
+          Signature: res.data.signature,
+          key: res.data.dir + rawFile.name,
+          host: res.data.host,
+          dir: res.data.dir,
+        };
+
+        resolve(true); // 继续上传
+      })
+      .catch(function (error) {
+        console.log(error);
+        reject(false);
+      });
+  });
+};
+
+/** 上传成功 */
+const updataVideo: UploadProps["onSuccess"] = (response, uploadFile) => {
+  formData.value.video = objDate.value.host + "/" + objDate.value.key;
+  formData.value.videoName = objDate.value.key;
+};
+
+const handleRemove = () => {
+  formData.value.video = "";
+  formData.value.videoName = "";
 };
 </script>
 
@@ -105,7 +145,7 @@ const handSubmit = () => {
             <el-form-item label="跳转按钮文案">
               <el-input
                 v-model="formData.buttonText"
-                placeholder="buttonText"
+                placeholder="例如：探索更多"
                 clearable
               />
             </el-form-item>
@@ -134,11 +174,10 @@ const handSubmit = () => {
                 style="width: 100%"
                 :action="objDate.host"
                 :data="objDate"
-                :on-remove="handleRemove"
                 :before-upload="beforeAvatarUpload"
                 :on-success="updataVideo"
                 :limit="1"
-                :file-list="videoList"
+                :show-file-list="false"
               >
                 <el-input
                   placeholder="上传视频素材（建议大小20M）"
@@ -147,6 +186,12 @@ const handSubmit = () => {
                   style="width: 240px"
                 />
               </el-upload>
+              <div v-if="formData.videoName" class="file">
+                {{ formData.videoName }}
+                <el-icon class="close_icon" @click="handleRemove"
+                  ><CircleClose
+                /></el-icon>
+              </div>
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12" :lg="12" :xl="12">

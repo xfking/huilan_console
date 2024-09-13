@@ -4,11 +4,13 @@ import { useRouter } from "vue-router";
 import ContentBox from "@/components/contentbox.vue";
 import { barrelStore } from "@/store/barrel";
 import { ElMessage } from "element-plus";
+import { memberStore } from "@/store/member";
 
 const router = useRouter();
 const { currentRoute } = useRouter();
 const route = currentRoute.value;
 const store = barrelStore();
+const user = memberStore();
 
 /** 初始数据 */
 const dataSet = ref({
@@ -25,9 +27,12 @@ const dataSet = ref({
 
 const options: any = ref([]);
 const time = ref("");
+const userOptions = ref([]);
 
 /** 初始方法 */
 onMounted(() => {
+  getUser();
+
   if (route.query.id) {
     dataSet.value.id = route.query.id;
 
@@ -36,7 +41,7 @@ onMounted(() => {
 });
 
 const getInit = () => {
-  store.infoBarrel({ id: dataSet.value.id }).then((res: any) => {
+  store.infoCard({ id: dataSet.value.id }).then((res: any) => {
     dataSet.value = {
       ...res.data,
       state: !!res.data.state,
@@ -48,6 +53,17 @@ const getInit = () => {
         value: res.data.barrel_id,
       },
     ];
+  });
+};
+
+const getUser = () => {
+  user.pageMember({}).then((res: any) => {
+    userOptions.value = res.data.data.map((m: any) => {
+      return {
+        label: m.name,
+        value: m.id,
+      };
+    });
   });
 };
 
@@ -134,7 +150,18 @@ const onBack = () => {
           </el-col>
           <el-col :xs="24" :sm="12" :lg="12" :xl="12">
             <el-form-item label="用户">
-              <el-input v-model="dataSet.m_id" placeholder="请输入" clearable />
+              <el-select
+                v-model="dataSet.m_id"
+                filterable
+                placeholder="Please enter a keyword"
+              >
+                <el-option
+                  v-for="item in userOptions"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                />
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12" :lg="12" :xl="12">

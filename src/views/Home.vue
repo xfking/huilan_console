@@ -1,7 +1,7 @@
 <template>
   <div class="content-box">
     <div class="home_top">
-      <div class="home_left flex flex_center">
+      <!-- <div class="home_left flex flex_center">
         <img
           src="https://wpimg.wallstcn.com/f778738c-e4f8-4870-b634-56703b4acafe.gif?imageView2/1/w/80/h/80"
           class="home_logo"
@@ -13,7 +13,7 @@
             今日天气晴朗，气温在15℃至25℃之间，东南风。
           </div>
         </div>
-      </div>
+      </div> -->
       <div class="home_right flex flex_center">
         <div class="num_box">
           <div class="flex flex_center">

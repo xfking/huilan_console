@@ -3,6 +3,7 @@ import { reactive, ref, toRefs } from "vue";
 import ContentBox from "@/components/contentBox.vue";
 import { userStore } from "@/store/user";
 import { UploadProps } from "element-plus";
+import { CircleClose } from "@element-plus/icons-vue";
 import ComponentsUploadImg from "@/components/ComponentsUploadImg.vue";
 
 interface IitemInfo {
@@ -29,7 +30,7 @@ const props = defineProps({
   },
 });
 const { data, pathOptions }: any = toRefs(props);
-const currentId: any = ref(0);
+const currentId: any = ref(data.value.length);
 const formData: any = ref({
   id: "",
   title: "",
@@ -64,6 +65,7 @@ const handReset = () => {
     desciption: "",
     buttonText: "",
     video: "",
+    videoName: "",
     pcImg: "",
     appImg: "",
   };
@@ -76,6 +78,8 @@ const handSubmit = () => {
     const index: number = data.value.data.findIndex(
       (m: IitemInfo) => m.id === formData.value.id
     );
+
+    console.log("------------", formData.value);
     if (index >= 0) {
       data.value.data[index] = formData.value;
     }
@@ -94,6 +98,9 @@ const handSubmit = () => {
 /** 编辑banner */
 const handEdit = (row: IitemInfo) => {
   formData.value = Object.assign({}, row);
+  if (formData.value.video && !formData.value.videoName) {
+    formData.value.videoName = formData.value.video.split("/img")[1];
+  }
 };
 
 const handleDelete = (index: number) => {
@@ -127,10 +134,12 @@ const beforeAvatarUpload = (rawFile: any) => {
 /** 上传成功 */
 const updataVideo: UploadProps["onSuccess"] = (response, uploadFile) => {
   formData.value.video = objDate.value.host + "/" + objDate.value.key;
+  formData.value.videoName = objDate.value.key;
 };
 
-const handleRemove: UploadProps["onRemove"] = (file, uploadFiles) => {
+const handleRemove = () => {
   formData.value.video = "";
+  formData.value.videoName = "";
 };
 </script>
 
@@ -205,11 +214,10 @@ const handleRemove: UploadProps["onRemove"] = (file, uploadFiles) => {
                 style="width: 100%"
                 :action="objDate.host"
                 :data="objDate"
-                :on-remove="handleRemove"
                 :before-upload="beforeAvatarUpload"
                 :on-success="updataVideo"
                 :limit="1"
-                :file-list="videoList"
+                :show-file-list="false"
               >
                 <el-input
                   placeholder="上传视频素材（建议大小20M）"
@@ -218,6 +226,12 @@ const handleRemove: UploadProps["onRemove"] = (file, uploadFiles) => {
                   style="width: 240px"
                 />
               </el-upload>
+              <div v-if="formData.videoName" class="file">
+                {{ formData.videoName }}
+                <el-icon class="close_icon" @click="handleRemove"
+                  ><CircleClose
+                /></el-icon>
+              </div>
             </el-form-item>
           </el-col>
           <el-col :xs="24" :sm="12" :lg="12" :xl="12">

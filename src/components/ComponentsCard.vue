@@ -2,6 +2,7 @@
 import { reactive, ref, toRefs } from "vue";
 import ContentBox from "@/components/contentBox.vue";
 import { userStore } from "@/store/user";
+import { CircleClose } from "@element-plus/icons-vue";
 import ComponentsUploadImg from "@/components/ComponentsUploadImg.vue";
 
 interface IitemInfo {
@@ -63,6 +64,7 @@ const handReset = () => {
     desciption: "",
     buttonText: "",
     video: "",
+    videoName: "",
     pcImg: "",
     appImg: "",
   };
@@ -93,6 +95,9 @@ const handSubmit = () => {
 /** 编辑banner */
 const handEdit = (row: IitemInfo) => {
   formData.value = Object.assign({}, row);
+  if (formData.value.video && !formData.value.videoName) {
+    formData.value.videoName = formData.value.video.split("/img")[1];
+  }
 };
 
 const handleDelete = (index: number) => {
@@ -126,10 +131,12 @@ const beforeAvatarUpload = (rawFile: any) => {
 /** 上传成功 */
 const updataVideo: UploadProps["onSuccess"] = (response, uploadFile) => {
   formData.value.video = objDate.value.host + "/" + objDate.value.key;
+  formData.value.videoName = objDate.value.key;
 };
 
-const handleRemove: UploadProps["onRemove"] = (file, uploadFiles) => {
+const handleRemove = () => {
   formData.value.video = "";
+  formData.value.videoName = "";
 };
 </script>
 
@@ -171,7 +178,7 @@ const handleRemove: UploadProps["onRemove"] = (file, uploadFiles) => {
               />
             </el-form-item>
           </el-col>
-          <el-col :xs="24" :sm="12" :lg="12" :xl="12">
+          <el-col :span="24">
             <el-form-item label="标题定位">
               <el-radio-group v-model="data.position">
                 <el-radio value="top" size="large">顶部</el-radio>
@@ -207,17 +214,16 @@ const handleRemove: UploadProps["onRemove"] = (file, uploadFiles) => {
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :xs="24" :sm="12" :lg="12" :xl="12">
+          <!-- <el-col :xs="24" :sm="12" :lg="12" :xl="12">
             <el-form-item label="视频链接">
               <el-upload
                 style="width: 100%"
                 :action="objDate.host"
                 :data="objDate"
-                :on-remove="handleRemove"
                 :before-upload="beforeAvatarUpload"
                 :on-success="updataVideo"
                 :limit="1"
-                :file-list="videoList"
+                :show-file-list="false"
               >
                 <el-input
                   placeholder="上传视频素材（建议大小20M）"
@@ -226,8 +232,14 @@ const handleRemove: UploadProps["onRemove"] = (file, uploadFiles) => {
                   style="width: 240px"
                 />
               </el-upload>
+              <div v-if="formData.videoName" class="file">
+                {{ formData.videoName }}
+                <el-icon class="close_icon" @click="handleRemove"
+                  ><CircleClose
+                /></el-icon>
+              </div>
             </el-form-item>
-          </el-col>
+          </el-col> -->
           <el-col :xs="24" :sm="12" :lg="12" :xl="12">
             <el-form-item label="PC素材">
               <div>
