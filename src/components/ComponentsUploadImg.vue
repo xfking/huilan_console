@@ -82,7 +82,6 @@ const handleRemove: UploadProps["onRemove"] = (file, uploadFiles) => {
     class="avatar-uploader"
     :action="objDate.host"
     :data="objDate"
-    :limit="1"
     :file-list="videoList"
     :on-remove="handleRemove"
     :show-file-list="isVideo"

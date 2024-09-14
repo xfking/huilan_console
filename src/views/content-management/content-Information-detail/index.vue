@@ -6,11 +6,14 @@ import ComponentsRichText from "@/components/ComponentsRichText.vue";
 import ComponentsUploadImg from "@/components/ComponentsUploadImg.vue";
 import { contentStore } from "@/store/content";
 import { ElMessage } from "element-plus";
+import { userStore } from "@/store/user";
+import { Plus } from "@element-plus/icons-vue";
 
 const router = useRouter();
 const { currentRoute } = useRouter();
 const route = currentRoute.value;
 const store = contentStore();
+const user = userStore();
 
 /** 初始数据 */
 const dataSet = ref({
@@ -20,6 +23,16 @@ const dataSet = ref({
   content: "",
   cover: "",
   state: true,
+});
+
+/** 上传参数 */
+const objDate: any = ref({
+  OSSAccessKeyId: "",
+  policy: "",
+  Signature: "",
+  key: "",
+  host: "",
+  dir: "",
 });
 
 /** 提交 */
@@ -70,6 +83,46 @@ const update = (e: any) => {
 const onBack = () => {
   router.go(-1);
 };
+
+/** 图片上传 */
+const beforeAvatarUpload = (rawFile: any) => {
+  return new Promise((resolve, reject) => {
+    user
+      .fileUpload({})
+      .then((res: any) => {
+        objDate.value = {
+          OSSAccessKeyId: res.data.accessid,
+          policy: res.data.policy,
+          Signature: res.data.signature,
+          key: res.data.dir + rawFile.name,
+          host: res.data.host,
+          dir: res.data.dir,
+        };
+
+        resolve(true); // 继续上传
+      })
+      .catch(function (error) {
+        console.log(error);
+        reject(false);
+      });
+  });
+};
+
+/** 上传成功 */
+const handleAvatarSuccess: UploadProps["onSuccess"] = (
+  response,
+  uploadFile
+) => {
+  dataSet.value.cover = objDate.value.host + "/" + objDate.value.key;
+  objDate.value = {
+    OSSAccessKeyId: "",
+    policy: "",
+    Signature: "",
+    key: "",
+    host: "",
+    dir: "",
+  };
+};
 </script>
 <template>
   <div class="content">
@@ -114,10 +167,21 @@ const onBack = () => {
           </el-col>
           <el-col :span="24">
             <el-form-item label="新闻封面">
-              <ComponentsUploadImg
+              <!-- <ComponentsUploadImg
                 :img="dataSet.cover"
                 @updata:img="dataSet.cover = $event"
-              />
+              /> -->
+              <el-upload
+                class="avatar-uploader"
+                :action="objDate.host"
+                :data="objDate"
+                :show-file-list="false"
+                :before-upload="beforeAvatarUpload"
+                :on-success="handleAvatarSuccess"
+              >
+                <img v-if="dataSet.cover" :src="dataSet.cover" class="avatar" />
+                <el-icon v-else class="avatar-uploader-icon"><Plus /> </el-icon>
+              </el-upload>
             </el-form-item>
           </el-col>
         </el-row>
